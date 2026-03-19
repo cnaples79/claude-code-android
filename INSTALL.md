@@ -21,6 +21,26 @@ Before you begin, confirm you have the following:
 
 ---
 
+## Choose Your Path
+
+This guide has two installation paths. Pick one before you start.
+
+| | Path A — Native Termux | Path B — proot-distro Ubuntu |
+|---|---|---|
+| **Best for** | Quick setup, experienced users | Full Linux environment, fewer workarounds |
+| **Setup time** | ~2 minutes | ~10-15 minutes |
+| **Ongoing maintenance** | Ripgrep fix breaks on every update | Just update normally |
+| **Install method** | npm | Native installer (curl) |
+| **Node.js required** | Yes (v25+) | No |
+
+**New to this?** Start with Path B — it has fewer things that can go wrong.
+
+**Want the fastest setup?** Use Path A.
+
+[Jump to Path A](#step-1-install-dependencies) · [Jump to Path B](#path-b-proot-distro-ubuntu)
+
+---
+
 ## Why This Is Hard
 
 Android requires solving problems that have stopped others. Some are universal, some are Android 16-specific. Understanding them will save you hours.
@@ -72,10 +92,10 @@ There is no root access. There is no systemd. There is no `/tmp` in the way most
 Open Termux and run:
 
 ```bash
-pkg install nodejs git curl proot -y
+pkg install nodejs git curl proot ripgrep -y
 ```
 
-This installs Node.js v25+, git, curl, and proot. All four are required — Node.js runs Claude Code, git is needed for repository operations, curl is used during authentication flows, and proot handles the `/tmp` bind mount at launch.
+This installs Node.js v25+, git, curl, proot, and ripgrep. All five are required — Node.js runs Claude Code, git is needed for repository operations, curl is used during authentication flows, proot handles the `/tmp` bind mount at launch, and ripgrep is required for Claude Code's Grep and Glob tools to work on ARM64.
 
 ---
 
@@ -177,6 +197,15 @@ Usage: proot [...]
 
 If `node -v` shows v24 or below, upgrade with `pkg upgrade nodejs`. If `echo $TMPDIR` is empty, add `export TMPDIR=$PREFIX/tmp` to your `~/.bashrc` and source it.
 
+For a full automated verification, clone this repo and run:
+
+```bash
+git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
+bash claude-code-android/tests/verify-claims.sh
+```
+
+This tests all documentation claims against your actual device. Results are saved to `tests/verification-results.txt`.
+
 ---
 
 ## Tested On
@@ -188,7 +217,7 @@ Community-reported working configurations:
 | Samsung Galaxy S26 Ultra | Android 16 | 6.12.30 | F-Droid | v25.8.1 | Verified |
 | Google Pixel 10 Pro | Android 16 | — | F-Droid | v25.8.1 | Verified |
 
-Both Path A and Path B verified on both devices. Expected to work on Android 14+ with any aarch64 device. [Submit a device report](../../issues/new?template=device_report.md) if you've tested on different hardware.
+Both Path A and Path B verified on both devices. Expected to work on Android 14+ with any aarch64 device. [Submit a device report](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) if you've tested on different hardware.
 
 ---
 

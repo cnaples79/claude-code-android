@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # Claude Code on Android — One-Command Installer
 # https://github.com/ferrumclaudepilgrim/claude-code-android
 #

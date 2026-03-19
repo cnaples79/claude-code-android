@@ -26,6 +26,21 @@
 
 ---
 
+## Prerequisites
+
+You need **Termux** installed from **F-Droid** (not the Play Store — the Play Store version is outdated and won't work).
+
+1. Download F-Droid from [f-droid.org](https://f-droid.org/en/)
+2. Open the downloaded APK — Android will block it. Go to Settings → allow "install unknown apps" from your browser
+3. **Security note:** After installing F-Droid, go back to Settings and disable "install unknown apps" from your browser. Keep it enabled only for F-Droid itself (F-Droid needs it to install apps)
+4. Open F-Droid, search for **Termux**, install it
+5. Android may warn "unsafe app — built for an older version." Tap **More details → Install anyway**. This is safe — Termux targets an older API level for broader compatibility
+6. Open Termux
+
+> **Already have Termux from F-Droid?** Skip to Quick Start.
+
+---
+
 ## Quick Start
 
 Four commands. Termux open. Go.
@@ -42,6 +57,13 @@ That's it. Claude Code is running on your phone.
 > **Scripted install:** If you're on a desktop terminal or can copy-paste from a browser, there's also a [one-command installer](install.sh) (`curl | bash`). But the four commands above are designed to be typed on a phone keyboard — no long URLs required.
 
 > **Note:** The Quick Start commands work for this session. Add TMPDIR to your .bashrc (shown below) to make it permanent.
+
+### What to Do First
+
+- **Navigate to a project directory** before launching, or create one: `mkdir ~/myproject && cd ~/myproject`
+- Claude Code works on files in your current directory
+- Type `/help` inside Claude Code to see what it can do
+- Run `/doctor` to verify your setup (after installing skills — see below)
 
 Add this to `~/.bashrc` so it sticks:
 
@@ -109,17 +131,20 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
 
 Verified working on:
 
-| Device | Android | Kernel | Path | Node.js | Status |
-|--------|---------|--------|------|---------|--------|
-| Samsung Galaxy S26 Ultra | 16 | 6.12.30 | A + B | v25.8.1 | Verified |
-| Google Pixel 10 Pro | 16 | — | A + B | v25.8.1 | Verified |
-| Samsung Galaxy S24/S25 | 15-16 | — | — | — | Untested |
-| Google Pixel 8/9 | 15-16 | — | — | — | Untested |
-| OnePlus 12/13 | 14-15 | — | — | — | Untested |
+| Device | Android | Path A | Path B | Grep/Glob | Last Verified |
+|--------|---------|--------|--------|-----------|---------------|
+| Samsung Galaxy S26 Ultra | 16 | Works | Works | Symlink fix | 2026-03-19 |
+| Google Pixel 10 Pro | 16 | Works | Works | Symlink fix | 2026-03-19 |
+| Samsung Galaxy S23+ | 15 | Testing | Testing | — | — |
+| Samsung Galaxy S24/S25 | 15-16 | Untested | Untested | — | — |
+| Google Pixel 8/9 | 15-16 | Untested | Untested | — | — |
+| OnePlus 12/13 | 14-15 | Untested | Untested | — | — |
 
 Expected to work on any aarch64 device running Android 14+ with Termux from F-Droid.
 
-**Tested on your device?** [Submit a device report](../../issues/new?template=device_report.md) to fill in the gaps.
+**Verified** means both install paths tested end-to-end including authentication and basic operations. Test results: [tests/verification-results.txt](tests/verification-results.txt)
+
+**Tested on your device?** [Submit a device report](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) to fill in the gaps.
 
 Claude Code is made by [Anthropic](https://www.anthropic.com). Official repo: [anthropics/claude-code](https://github.com/anthropics/claude-code).
 
@@ -158,17 +183,15 @@ Claude Code reads a CLAUDE.md file from your project root for persistent rules. 
 
 Found a bug? Got it working on a new device? Know a better workaround?
 
-- **Bug reports:** [Open an issue](../../issues/new?template=bug_report.md)
-- **Device reports:** [Submit compatibility data](../../issues/new?template=device_report.md)
+- **Bug reports:** [Open an issue](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=bug_report.md)
+- **Device reports:** [Submit compatibility data](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md)
 - **Improvements:** PRs welcome
 
 ---
 
 ## About This Project
 
-This repo is built and maintained using Claude Code running on the same Android device it documents. The operator ([FerrumFluxFenice](https://github.com/FerrumFluxFenice)) directs the work — technical decisions, verification, and editorial judgment are human-directed. The implementation is a human-AI collaboration, and the commit history reflects that honestly.
-
-If you're curious about the workflow: Claude Code operates inside Termux with a multi-agent architecture (5 specialized agents), a hook system for safety gates, and Telegram-based operator approval for public actions. The [CLAUDE.md template](CONSTITUTION-TEMPLATE.md) in this repo is a generalized version of the system that built it.
+This repo is built and maintained using Claude Code running on the same Android device it documents. The operator ([FerrumFluxFenice](https://github.com/FerrumFluxFenice)) directs the work — technical decisions and verification are human-directed. The commit history reflects that collaboration honestly.
 
 ## License
 
