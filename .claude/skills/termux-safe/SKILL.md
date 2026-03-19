@@ -26,7 +26,7 @@ You are running inside Termux on Android (aarch64). These constraints produce **
 - **`/tmp` is not writable** without proot. Claude Code requires: `proot -b $PREFIX/tmp:/tmp claude`
 - **`TMPDIR` must be set** before npm operations: `export TMPDIR=$PREFIX/tmp`
 - **Node.js v24 hangs** on ARM64 under Termux. Require v25+.
-- **File descriptor limit is ~1024** under proot. Avoid spawning many concurrent processes.
+- **File descriptor limits vary by device.** Check with `ulimit -n`. Avoid spawning many concurrent processes.
 - **Android phantom process killer** limits background processes to ~32 across all apps. Limit concurrent subagents to 2.
 - **proot crash = /tmp mount gone.** Never store persistent state in `/tmp`.
 - **`process.platform` returns `"android"`**, not `"linux"`. Some tools check for `linux` specifically and fail.

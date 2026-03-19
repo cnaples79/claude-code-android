@@ -117,6 +117,8 @@ proot -b $PREFIX/tmp:/tmp claude
 
 This single invocation binds Termux's writable tmp directory to `/tmp`, allowing Claude Code to operate as if it were on a standard Linux system. No root. No containers. No virtualization. Just syscall interception.
 
+> **Alternative:** If you prefer not to use proot, you can set `export CLAUDE_CODE_TMPDIR=$PREFIX/tmp/claude && mkdir -p $PREFIX/tmp/claude && claude`. This redirects Claude's temp files without proot, but some tools that hardcode `/tmp` may still fail.
+
 On first launch, Claude Code will prompt you to authenticate. A URL will appear in your terminal — open it in your phone's browser to complete OAuth. If authentication fails, see the [OAuth troubleshooting entry](TROUBLESHOOTING.md#oauth--authentication-fails-on-first-launch).
 
 ---

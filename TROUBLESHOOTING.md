@@ -78,6 +78,16 @@ echo "alias claude-android='proot -b \$PREFIX/tmp:/tmp claude'" >> ~/.bashrc
 source ~/.bashrc
 ```
 
+**Alternative fix (no proot):** Set `CLAUDE_CODE_TMPDIR` to redirect Claude Code's temp files:
+
+```bash
+export CLAUDE_CODE_TMPDIR=$PREFIX/tmp/claude
+mkdir -p $PREFIX/tmp/claude
+claude
+```
+
+This avoids proot entirely but only redirects Claude's own temp files — other tools that expect `/tmp` may still fail. The proot approach (shown above) is more comprehensive.
+
 **Cause:** `/tmp` is not writable. Claude Code hardcodes `/tmp` for socket files, IPC, and ephemeral state. On Android, `/tmp` either doesn't exist or isn't writable from Termux's sandbox.
 
 ---
@@ -225,8 +235,6 @@ Error: EMFILE, too many open files
 - Restart Claude Code to release leaked file descriptors.
 
 **Cause:** EMFILE means the process ran out of file descriptors. The limit varies by device and Android version. If you hit this, reduce concurrent operations or check if leaked FDs are the real issue (`ls /proc/$$/fd | wc -l`).
-
-**Cause:** The file descriptor limit under proot is approximately 1024. Heavy I/O, many open sockets, or spawning lots of processes can exhaust this limit.
 
 ---
 
