@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.1.0] — 2026-03-19
+
+### Major UX Overhaul
+
+- Added Prerequisites section with F-Droid/Termux installation walkthrough
+- Added "Choose Your Path" decision point at top of INSTALL.md
+- Added "What to Do First" orientation section after Quick Start
+- Path B rewritten with exact verified sequence (every step tested on fresh devices)
+- Device table redesigned with feature columns and "Last Verified" dates
+- Three devices verified: Samsung Galaxy S26 Ultra, Google Pixel 10 Pro, Samsung Galaxy S23+
+- Added `CLAUDE_CODE_TMPDIR` as documented alternative to proot
+- Native installer note clarified (doesn't work in native Termux, works in Path B)
+
+### Bug Fixes
+
+- Fixed kernel prerequisite excluding Android 14/15 users (was 6.12.x, now varies)
+- Fixed "Problem 3 is Android 16-specific" (Node v24 hang affects all ARM64)
+- Aligned curl across Quick Start, INSTALL.md, and install.sh
+- Stripped private repo paths from verification scripts
+- Fixed `which` to `command -v` for portability
+- Fixed CODE_OF_CONDUCT contact method
+- Fixed install.sh shebang for desktop inspection
+- Removed stale FD limit claims (~1024 → varies by device)
+- Fixed duplicate EMFILE "Cause" paragraph with contradictory numbers
+
+### Verification
+
+- Added `tests/verify-claims.sh` — automated verification of all documentation claims
+- Verification results linked from device table and INSTALL.md
+
 ## [1.0.0] — 2026-03-19
 
 ### First Stable Release

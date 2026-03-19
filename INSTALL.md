@@ -43,31 +43,11 @@ This guide has two installation paths. Pick one before you start.
 
 ## Why This Is Hard
 
-Android requires solving problems that have stopped others. Some are universal, some are Android 16-specific. Understanding them will save you hours.
+Running Claude Code on Android means solving problems that don't exist on desktop Linux. The full explanation is in the [README](README.md#why-this-is-hard). The key points:
 
-> **Note:** Problem 1 (proot-distro TCGETS2 bug) is Android 16-specific — it only affects kernel 6.12. Problem 3 (Node.js v24 hang) affects all ARM64 Termux installs regardless of Android version. The /tmp fix (Problem 2) applies to all Android versions.
-
-### Problem 1: proot-distro Is a Detour, Not a Dead End
-
-The obvious approach — install a full Linux distribution inside Termux using `proot-distro` — works but is unnecessary overhead. A TCGETS2 ioctl bug that broke proot-distro on kernel 6.12 was fixed in proot 5.1.107-66 (October 2025). Guest distros install and run correctly with current proot versions.
-
-However, a full guest OS is not required for Claude Code. Claude Code only needs a writable `/tmp` — which a single proot bind mount provides without the overhead of an entire Linux rootfs. The native Termux approach is lighter, faster, and avoids the storage cost of maintaining a guest distribution.
-
-> **Note:** You will see `proot warning: can't sanitize binding "/proc/self/fd/1"` during proot-distro operations. This is harmless — proot cannot resolve the `/proc/self/fd` symlink inside the guest, but stdout functions correctly regardless.
->
-> If you prefer a full Linux environment, see [Path B: proot-distro Ubuntu](#path-b-proot-distro-ubuntu) at the end of this guide.
-
-### Problem 2: The /tmp Restriction
-
-Claude Code hardcodes `/tmp` for socket files, IPC, and ephemeral state. On Android, `/tmp` either doesn't exist or isn't writable from within Termux's sandbox. Without it, Claude Code fails silently — no error message, no crash log. It simply doesn't start, or starts and immediately loses the ability to communicate with its own subprocesses.
-
-### Problem 3: The Node.js v24 Hang
-
-Multiple users have reported that Claude Code hangs on startup with Node.js v24 on ARM64 under Termux. The exact cause is unclear — likely related to how Node's event loop interacts with Android's process model — but upgrading to Node.js v25+ resolves it. Termux's current `pkg` repository ships v25, so a fresh install avoids this entirely. If you have an older Node version pinned, upgrade it.
-
-### Why This Combination Works
-
-The solution skips the guest distro — not because it's broken (it isn't, as of proot 5.1.107-66), but because it's unnecessary overhead. Install Claude Code natively inside Termux, where Node.js runs directly on the host. Handle the `/tmp` problem at launch time only, using a minimal `proot` bind mount — not a full guest OS, just a single path remap. This is lighter, faster, and avoids the storage and complexity cost of maintaining a guest distribution.
+1. **`/tmp` isn't writable** — Claude Code needs it, Android doesn't provide it. Path A fixes this with a proot bind mount. Path B avoids it entirely (Ubuntu has native `/tmp`).
+2. **Node.js v24 hangs on ARM64** — use v25+ (Termux ships this by default).
+3. **ripgrep binary missing for ARM64 Android** — Path A needs a symlink fix. Path B doesn't need it.
 
 ---
 

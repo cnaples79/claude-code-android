@@ -23,3 +23,12 @@ Use the [device report template](https://github.com/ferrumclaudepilgrim/claude-c
 4. Open a PR with your device info (model, Android version, Node version)
 
 Keep PRs focused on a single change. Include what you tested and on what device.
+
+## Contributing Skills
+
+Skills live in `.claude/skills/`. Each skill has a `SKILL.md` with YAML frontmatter. To contribute a new skill:
+
+1. Create a directory under `.claude/skills/<skill-name>/`
+2. Add a `SKILL.md` following the [Agent Skills format](https://agentskills.io/specification)
+3. Test it on a real Android/Termux device
+4. Open a PR with what it does and what device you tested on

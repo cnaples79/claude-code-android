@@ -101,12 +101,15 @@ Node.js v24 hangs on startup under Termux on ARM64. The cause is unclear but upg
 
 | File | What It Is |
 |------|-----------|
-| **[install.sh](install.sh)** | One-command installer — packages, Claude Code, ripgrep fix, shell config |
-| **[INSTALL.md](INSTALL.md)** | Complete step-by-step install guide with Path A (native) and Path B (proot-distro) |
+| **[install.sh](install.sh)** | One-command installer for Path A |
+| **[INSTALL.md](INSTALL.md)** | Complete step-by-step guide with Path A and Path B |
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common failures with symptoms, causes, and fixes |
-| **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | A CLAUDE.md template for giving Claude Code persistent rules and identity on Android |
+| **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | CLAUDE.md template for persistent rules on Android |
 | **[CHANGELOG.md](CHANGELOG.md)** | Version history |
 | **[.claude/skills/](.claude/skills/)** | Android-specific Claude Code skills (/doctor, /fix-ripgrep, termux-safe) |
+| **[tests/](tests/)** | Verification suite — test documentation claims against your device |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)** | How to contribute, report bugs, submit device reports |
+| **[SECURITY.md](SECURITY.md)** | Security vulnerability reporting |
 
 ---
 
@@ -165,6 +168,7 @@ This repo includes [Claude Code skills](https://code.claude.com/docs/en/skills) 
 Copy the skills to your home directory so they work in any project:
 
 ```bash
+cd ~
 git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
 mkdir -p ~/.claude/skills
 cp -r claude-code-android/.claude/skills/* ~/.claude/skills/
