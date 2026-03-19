@@ -103,6 +103,29 @@ Claude Code is made by [Anthropic](https://www.anthropic.com). Official repo: [a
 
 ---
 
+## Skills for Android
+
+This repo includes [Claude Code skills](https://code.claude.com/docs/en/skills) — the first Android/Termux-specific skills in the ecosystem.
+
+| Skill | What It Does | How to Use |
+|-------|-------------|-----------|
+| `/doctor` | Diagnose your full Termux+Claude Code setup in one pass | Type `/doctor` in Claude Code |
+| `/fix-ripgrep` | Fix broken Grep/Glob tools (missing arm64-android binary) | Type `/fix-ripgrep` in Claude Code |
+| `termux-safe` | Auto-loaded constraints — prevents `sudo`, wrong paths, silent failures | Loads automatically |
+
+### Installation
+
+Copy the skills to your home directory so they work in any project:
+
+```bash
+git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
+cp -r claude-code-android/.claude/skills/* ~/.claude/skills/
+```
+
+Or if you've already cloned, just copy the skills directory.
+
+---
+
 ## The CLAUDE.md Template
 
 Claude Code reads a CLAUDE.md file from your project root for persistent rules. The [template](CONSTITUTION-TEMPLATE.md) in this repo is ready to fork for Android/Termux — includes platform constraints, safety rules, and agent configuration.
