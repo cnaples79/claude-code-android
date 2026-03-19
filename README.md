@@ -1,16 +1,17 @@
 # Claude Code on Android
 
 <p align="center">
-  <img src="logo.jpg" alt="Claude Code on Android" width="200">
+  <img src="assets/logo.jpg" alt="Claude Code on Android" width="200">
 </p>
 
 <p align="center">
-  <img src="screenshot.jpg" alt="Claude Code running on Samsung Galaxy S26 Ultra" width="280">
-  <img src="screenshot-s23plus.jpg" alt="Claude Code verified on Samsung Galaxy S23+" width="280">
+  <img src="assets/screenshot-s26ultra.jpg" alt="Samsung Galaxy S26 Ultra" width="220">
+  <img src="assets/screenshot-pixel10pro.jpg" alt="Google Pixel 10 Pro" width="220">
+  <img src="assets/screenshot-s23plus.jpg" alt="Samsung Galaxy S23+" width="220">
 </p>
 
 <p align="center">
-  <em>Left: Samsung Galaxy S26 Ultra (Android 16) · Right: Samsung Galaxy S23+ (Android 15)</em>
+  <em>S26 Ultra (Android 16) · Pixel 10 Pro (Android 16) · S23+ (Android 15)</em>
 </p>
 
 <p align="center">
@@ -48,7 +49,33 @@ You need **Termux** installed from **F-Droid** (not the Play Store — the Play 
 
 ## Quick Start
 
-Four commands. Termux open. Go.
+There are two ways to install Claude Code on Android. Pick the one that fits:
+
+### Path B — Recommended (Full Linux Environment)
+
+The cleanest setup. Installs Ubuntu inside Termux via proot-distro. Claude Code runs in a standard Linux environment — no workarounds, no symlink fixes, no TMPDIR hacks. Uses the official Anthropic installer.
+
+```bash
+pkg upgrade -y
+pkg install proot-distro -y
+proot-distro install ubuntu
+proot-distro login ubuntu
+```
+
+Inside Ubuntu:
+
+```bash
+apt update && apt upgrade -y
+curl -fsSL https://claude.ai/install.sh | bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+claude
+```
+
+> **Why `pkg upgrade` and `apt upgrade` first?** Without updated SSL libraries, the Claude Code installer returns 403. Both upgrades are required.
+
+### Path A — Lightweight Alternative
+
+Faster setup (~2 min), less disk space, but requires workarounds that break on every Claude Code update.
 
 ```bash
 pkg install nodejs git curl proot ripgrep -y
@@ -56,19 +83,6 @@ export TMPDIR=$PREFIX/tmp   # Critical: npm fails silently without this
 npm install -g @anthropic-ai/claude-code
 proot -b $PREFIX/tmp:/tmp claude
 ```
-
-That's it. Claude Code is running on your phone.
-
-> **Scripted install:** If you're on a desktop terminal or can copy-paste from a browser, there's also a [one-command installer](install.sh) (`curl | bash`). But the four commands above are designed to be typed on a phone keyboard — no long URLs required.
-
-> **Note:** The Quick Start commands work for this session. Add TMPDIR to your .bashrc (shown below) to make it permanent.
-
-### What to Do First
-
-- **Navigate to a project directory** before launching, or create one: `mkdir ~/myproject && cd ~/myproject`
-- Claude Code works on files in your current directory
-- Type `/help` inside Claude Code to see what it can do
-- Run `/doctor` to verify your setup (after installing skills — see below)
 
 Add this to `~/.bashrc` so it sticks:
 
@@ -78,27 +92,49 @@ echo "alias claude-android='proot -b \$PREFIX/tmp:/tmp claude'" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Now just type `claude-android`.
+> **Scripted install:** If you can copy-paste from a browser, there's also a [one-command installer](install.sh) (`curl | bash`).
 
-> **Requires:** [Termux from F-Droid](https://f-droid.org/en/packages/com.termux/) (not Play Store), Android 14+, Node.js v25+, Claude Max or Pro subscription.
+### Which Path Should I Use?
+
+| | Path A (Native Termux) | Path B (proot-distro Ubuntu) |
+|---|---|---|
+| Setup time | ~2 minutes | ~10-15 minutes |
+| Disk usage | Minimal | ~500MB+ |
+| Install method | npm | Official Anthropic installer |
+| Node.js required | Yes (v25+) | No |
+| /tmp workaround | Required every launch | Not needed |
+| Ripgrep fix | Required, breaks on every update | Not needed |
+| Ongoing maintenance | Re-fix after each update | Just update normally |
+| Best for | Experienced users, light usage | Everyone else |
+
+> **First timer?** Use Path B. Fewer things break.
+
+### What to Do First
+
+- **Navigate to a project directory** before launching, or create one: `mkdir ~/myproject && cd ~/myproject`
+- Claude Code works on files in your current directory
+- Type `/help` inside Claude Code to see what it can do
+- Run `/doctor` to verify your setup (after installing skills — see below)
+
+> **Requires:** [Termux from F-Droid](https://f-droid.org/en/packages/com.termux/) (not Play Store), Android 14+, Claude Max or Pro subscription.
 
 ---
 
 ## Why This Is Hard
 
-Running Claude Code on Android requires solving three problems that have stopped others:
+Running Claude Code on Android requires solving problems that don't exist on desktop:
 
-### 1. proot-distro works but is unnecessary overhead
+### 1. /tmp doesn't exist
 
-A bug that broke proot-distro on kernel 6.12 was fixed in proot 5.1.107-66 (October 2025). Guest distros work correctly now. But a full guest OS is unnecessary for Claude Code — it only needs a writable `/tmp`, which a single proot bind mount provides. The Quick Start uses the lighter native Termux approach. For a full Linux environment, see [INSTALL.md — Path B](INSTALL.md#path-b-proot-distro-ubuntu).
+Claude Code hardcodes `/tmp` for sockets and IPC. On Android, `/tmp` isn't writable. Without it, Claude Code fails silently — no error, no crash log, just nothing. Path A fixes this with `proot -b $PREFIX/tmp:/tmp`. Path B avoids it entirely — Ubuntu has native `/tmp`.
 
-### 2. /tmp doesn't exist
+### 2. Node.js v24 hangs on ARM64
 
-Claude Code hardcodes `/tmp` for sockets and IPC. On Android, `/tmp` isn't writable. Without it, Claude Code fails silently — no error, no crash log, just nothing. The fix: `proot -b $PREFIX/tmp:/tmp` remaps the path at the syscall level. No root required.
+Node.js v24 hangs on startup under Termux on ARM64. Upgrading to v25+ fixes it. Termux ships v25 by default now. Path B doesn't need Node.js at all (uses the native binary installer).
 
-### 3. Node.js v24 hangs on ARM64
+### 3. Missing ripgrep binary
 
-Node.js v24 hangs on startup under Termux on ARM64. The cause is unclear but upgrading to v25+ fixes it. Termux ships v25 by default now, so fresh installs avoid this.
+Claude Code bundles ripgrep for Grep/Glob tools but has no `arm64-android` build. Path A needs a symlink fix. Path B doesn't — Termux's ripgrep bleeds through via PATH.
 
 ---
 
@@ -106,51 +142,31 @@ Node.js v24 hangs on startup under Termux on ARM64. The cause is unclear but upg
 
 | File | What It Is |
 |------|-----------|
-| **[install.sh](install.sh)** | One-command installer for Path A |
 | **[INSTALL.md](INSTALL.md)** | Complete step-by-step guide with Path A and Path B |
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common failures with symptoms, causes, and fixes |
 | **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | CLAUDE.md template for persistent rules on Android |
-| **[CHANGELOG.md](CHANGELOG.md)** | Version history |
+| **[install.sh](install.sh)** | One-command installer for Path A |
 | **[.claude/skills/](.claude/skills/)** | Android-specific Claude Code skills (/doctor, /fix-ripgrep, termux-safe) |
 | **[tests/](tests/)** | Verification suite — test documentation claims against your device |
+| **[CHANGELOG.md](CHANGELOG.md)** | Version history |
 | **[CONTRIBUTING.md](CONTRIBUTING.md)** | How to contribute, report bugs, submit device reports |
-| **[SECURITY.md](SECURITY.md)** | Security vulnerability reporting |
-
----
-
-## Known Constraints
-
-Running on a phone means real limits. Know them upfront:
-
-| Constraint | Impact | Workaround |
-|-----------|--------|-----------|
-| No root | No `sudo`, no ports below 1024 | Use ports 1024+, skip anything that needs root |
-| No systemd | No services, no daemons the normal way | Use `crond` or shell scripts for persistence |
-| ~512MB Node.js heap | Large datasets must stream | Don't buffer — stream and process incrementally |
-| File descriptor limits | Heavy I/O can hit EMFILE on some devices | Limit concurrent processes |
-| Phantom process killer | Android kills excess background processes | Use `tmux`, limit to 2-3 background processes |
-| /tmp is volatile | proot crash = mount gone | Never store persistent state in /tmp |
-
-See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
 
 ---
 
 ## Device Compatibility
 
-Verified working on:
+Verified on three devices, two Android versions, two chipsets:
 
-| Device | Android | Path A | Path B | Grep/Glob | Last Verified |
-|--------|---------|--------|--------|-----------|---------------|
-| Samsung Galaxy S26 Ultra | 16 | Works | Works | Symlink fix | 2026-03-19 |
-| Google Pixel 10 Pro | 16 | Works | Works | Symlink fix | 2026-03-19 |
-| Samsung Galaxy S23+ | 15 | Untested | Works | Not needed (Path B) | 2026-03-19 |
-| Samsung Galaxy S24/S25 | 15-16 | Untested | Untested | — | — |
-| Google Pixel 8/9 | 15-16 | Untested | Untested | — | — |
-| OnePlus 12/13 | 14-15 | Untested | Untested | — | — |
+| Device | Android | Path A | Path B | Last Verified |
+|--------|---------|--------|--------|---------------|
+| Samsung Galaxy S26 Ultra | 16 | Works | Works | 2026-03-19 |
+| Google Pixel 10 Pro | 16 | Works | Works | 2026-03-19 |
+| Samsung Galaxy S23+ | 15 | Untested | Works | 2026-03-19 |
+| Samsung Galaxy S24/S25 | 15-16 | Untested | Untested | — |
+| Google Pixel 8/9 | 15-16 | Untested | Untested | — |
+| OnePlus 12/13 | 14-15 | Untested | Untested | — |
 
-Expected to work on any aarch64 device running Android 14+ with Termux from F-Droid.
-
-**Verified** means both install paths tested end-to-end including authentication and basic operations. Test results: [tests/verification-results.txt](tests/verification-results.txt)
+**Verified** means install, authentication, and basic operations tested end-to-end on real hardware. Test results: [tests/verification-results.txt](tests/verification-results.txt)
 
 **Tested on your device?** [Submit a device report](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) to fill in the gaps.
 
@@ -158,9 +174,26 @@ Claude Code is made by [Anthropic](https://www.anthropic.com). Official repo: [a
 
 ---
 
+## Known Constraints
+
+Running on a phone means real limits:
+
+| Constraint | Impact | Workaround |
+|-----------|--------|-----------|
+| No root | No `sudo`, no ports below 1024 | Use ports 1024+, skip anything that needs root |
+| No systemd | No services, no daemons | Use `crond` or shell scripts for persistence |
+| ~512MB Node.js heap | Large datasets must stream | Don't buffer — stream and process incrementally |
+| File descriptor limits | Heavy I/O can hit EMFILE on some devices | Limit concurrent processes |
+| Phantom process killer | Android kills excess background processes | Use `tmux`, limit to 2-3 background processes |
+| /tmp is volatile (Path A) | proot crash = mount gone | Never store persistent state in /tmp |
+
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
+
+---
+
 ## Skills for Android
 
-This repo includes [Claude Code skills](https://code.claude.com/docs/en/skills) built specifically for Android/Termux environments.
+This repo includes [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) built specifically for Android/Termux environments.
 
 | Skill | What It Does | How to Use |
 |-------|-------------|-----------|
