@@ -1,0 +1,11 @@
+node_modules/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Environment files
+.env
+.env.*
