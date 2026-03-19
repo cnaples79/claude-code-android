@@ -50,7 +50,7 @@ echo "Symlink created: $(ls -la "$VENDOR_DIR/arm64-android/rg")"
 
 ## Important notes
 
-- This symlink breaks when Claude Code updates (`npm update -g`). Re-run `/fix-ripgrep` after updates.
+- This symlink breaks when Claude Code updates. Re-run `/fix-ripgrep` after any Claude Code upgrade.
 - This is a workaround. The upstream fix is tracked at [anthropics/claude-code#9435](https://github.com/anthropics/claude-code/issues/9435).
 
 Report: what was the state before, what was done, does Grep work now.

@@ -47,9 +47,9 @@ Now just type `claude-android`.
 
 Running Claude Code on Android requires solving three problems that have stopped others:
 
-### 1. proot-distro is broken on Android 16 (Android 16 specific)
+### 1. proot-distro works but is unnecessary overhead
 
-The kernel's security model breaks stdout file descriptor binding inside guest distributions. Processes launch but produce no output. **There is no fix inside the guest distro.** The solution: skip guest distros entirely. Run Claude Code natively in Termux.
+A bug that broke proot-distro on kernel 6.12 was fixed in proot 5.1.107-66 (October 2025). Guest distros work correctly now. But a full guest OS is unnecessary for Claude Code — it only needs a writable `/tmp`, which a single proot bind mount provides. The Quick Start uses the lighter native Termux approach. For a full Linux environment, see [INSTALL.md — Path B](INSTALL.md#path-b-proot-distro-ubuntu).
 
 ### 2. /tmp doesn't exist
 

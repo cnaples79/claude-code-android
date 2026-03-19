@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.3.0] — 2026-03-19
+
+### Documentation Correction — proot-distro Works on Android 16
+
+Previous documentation incorrectly stated that proot-distro was broken on Android 16 due to a "kernel-level restriction" with "no fix inside the guest distro." This was wrong.
+
+**What actually happened:** A TCGETS2 ioctl bug in proot broke stdout in guest distros using glibc 2.41+. This was fixed in proot 5.1.107-66 (October 2025). Current proot versions (5.1.107-70+) handle guest distros correctly on kernel 6.12.
+
+**What changed:**
+- Corrected all false claims about proot-distro being broken
+- Added Path B installation guide (proot-distro Ubuntu) as a valid alternative
+- Documented native installer (`curl -fsSL https://claude.ai/install.sh | bash`) for Path B
+- Updated TROUBLESHOOTING.md proot-distro entry with current status and upgrade instructions
+- Verified: Ubuntu 25.10 installs, Claude Code 2.1.79 runs via native installer inside guest
+
+### Two Installation Paths
+
+Users now have a documented choice:
+- **Path A (Native Termux):** 4 commands, ~2 min, lighter — recommended for most users
+- **Path B (proot-distro Ubuntu):** Full Linux env, no /tmp workaround needed, native installer — for users who want a complete Linux environment
+
 ## [0.2.0] — 2026-03-18
 
 ### Skills — First Android/Termux Skills in the Ecosystem

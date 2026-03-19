@@ -27,9 +27,15 @@ Android requires solving problems that have stopped others. Some are universal, 
 
 > **Note:** Problems 1 and 3 are Android 16-specific. The /tmp fix (Problem 2) applies to all Android versions.
 
-### Problem 1: Android 16 Breaks proot-distro
+### Problem 1: proot-distro Is a Detour, Not a Dead End
 
-The obvious approach — install a full Linux distribution inside Termux using `proot-distro` — fails on Android 16. The kernel's updated security model breaks proot's stdout file descriptor binding inside guest distributions. Processes launch but produce no output, or hang indefinitely. This is a kernel-level restriction, not a configuration issue. There is no fix within the guest distro. On this kernel, `proot-distro` is a dead end for interactive CLI tools.
+The obvious approach — install a full Linux distribution inside Termux using `proot-distro` — works but is unnecessary overhead. A TCGETS2 ioctl bug that broke proot-distro on kernel 6.12 was fixed in proot 5.1.107-66 (October 2025). Guest distros install and run correctly with current proot versions.
+
+However, a full guest OS is not required for Claude Code. Claude Code only needs a writable `/tmp` — which a single proot bind mount provides without the overhead of an entire Linux rootfs. The native Termux approach is lighter, faster, and avoids the storage cost of maintaining a guest distribution.
+
+> **Note:** You will see `proot warning: can't sanitize binding "/proc/self/fd/1"` during proot-distro operations. This is harmless — proot cannot resolve the `/proc/self/fd` symlink inside the guest, but stdout functions correctly regardless.
+>
+> If you prefer a full Linux environment, see [Path B: proot-distro Ubuntu](#path-b-proot-distro-ubuntu) at the end of this guide.
 
 ### Problem 2: The /tmp Restriction
 
@@ -41,7 +47,7 @@ Multiple users have reported that Claude Code hangs on startup with Node.js v24 
 
 ### Why This Combination Works
 
-The solution skips the guest distro entirely. Install Claude Code natively inside Termux, where Node.js runs without the proot-distro stdout breakage. Handle the `/tmp` problem at launch time only, using a minimal `proot` bind mount — not a full guest OS, just a single path remap. This is lighter, faster, and immune to the guest-distro kernel restrictions.
+The solution skips the guest distro — not because it's broken (it isn't, as of proot 5.1.107-66), but because it's unnecessary overhead. Install Claude Code natively inside Termux, where Node.js runs directly on the host. Handle the `/tmp` problem at launch time only, using a minimal `proot` bind mount — not a full guest OS, just a single path remap. This is lighter, faster, and avoids the storage and complexity cost of maintaining a guest distribution.
 
 ---
 
@@ -91,7 +97,9 @@ export TMPDIR=$PREFIX/tmp
 npm install -g @anthropic-ai/claude-code
 ```
 
-This installs Claude Code globally. With `TMPDIR` set correctly, npm can stage files, compile any native addons, and complete the installation cleanly.
+This installs Claude Code globally via npm. With `TMPDIR` set correctly, npm can stage files and complete the installation cleanly.
+
+> **Note:** Anthropic now offers a native installer (`curl -fsSL https://claude.ai/install.sh | bash`) as the preferred installation method. However, the native installer targets standard Linux platforms and may not detect Termux correctly. The npm method remains reliable for native Termux installs. If you use [Path B (proot-distro Ubuntu)](#path-b-proot-distro-ubuntu), the native installer works there since the guest reports as standard Linux.
 
 ---
 
@@ -181,4 +189,68 @@ Tested on Android 16. Expected to work on Android 14+ but not yet verified on ea
 
 ---
 
-*Last verified: March 18, 2026*
+---
+
+## Path B: proot-distro Ubuntu
+
+An alternative approach: install a full Ubuntu guest inside Termux, then install Claude Code inside it. This avoids the `/tmp` bind mount and ripgrep symlink entirely, at the cost of more disk space and setup time.
+
+### When to use Path B
+
+- You want a full Linux environment (apt, standard paths, /tmp works natively)
+- You plan to run other Linux tools alongside Claude Code
+- You prefer the native installer over npm
+
+### Setup
+
+```bash
+# In Termux (not inside Claude Code)
+pkg install proot-distro -y
+proot-distro install ubuntu
+proot-distro login ubuntu
+```
+
+Inside the Ubuntu guest:
+
+```bash
+# Install Claude Code via the native installer
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Launch Claude Code
+claude
+```
+
+That's it. No `/tmp` workaround needed — Ubuntu has a native `/tmp`. No ripgrep symlink needed — the Termux system ripgrep is accessible via PATH.
+
+### Path B trade-offs
+
+| | Path A (Native Termux) | Path B (proot-distro Ubuntu) |
+|---|---|---|
+| Setup time | ~2 minutes | ~10-15 minutes |
+| Disk usage | Minimal | ~500MB+ for Ubuntu rootfs |
+| /tmp workaround | Required (proot bind mount) | Not needed |
+| ripgrep fix | Required (symlink) | Not needed |
+| Install method | npm | Native installer (curl) |
+| Auth flow | Browser auto-opens | Manual URL copy/paste |
+| Overhead | Minimal | Full guest OS layer |
+| Best for | Quick setup, light usage | Full Linux environment |
+
+### Path B notes
+
+- **Authentication:** The browser will not auto-open from inside the guest. Copy the auth URL from the terminal and paste it into your phone's browser manually.
+- **The warning `can't sanitize binding "/proc/self/fd/1"`** appears during login. It is harmless — stdout works correctly.
+- **Samsung One UI 8 users:** There is a known performance regression when Termux is backgrounded (proot-distro issue [#567](https://github.com/termux/proot-distro/issues/567)). Keep Termux in the foreground or split-screen for best performance.
+- **You cannot run proot-distro from inside Claude Code** if Claude Code was launched with `proot -b`. proot-distro detects nesting and refuses. Run proot-distro commands from a separate Termux session.
+
+### Verified Path B configuration
+
+| Component | Version |
+|-----------|---------|
+| proot-distro | 4.38.0 |
+| Guest OS | Ubuntu 25.10 (Questing Quokka) |
+| Claude Code | 2.1.79 (native installer) |
+| Kernel | 6.12.30 (Android 16) |
+
+---
+
+*Last verified: March 19, 2026*

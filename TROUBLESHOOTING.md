@@ -11,7 +11,7 @@ If you haven't installed yet, see [INSTALL.md](INSTALL.md) first.
 - [Claude Code hangs on startup](#claude-code-hangs-on-startup)
 - [Claude Code won't start, no error](#claude-code-wont-start-no-error)
 - [OAuth / authentication fails on first launch](#oauth--authentication-fails-on-first-launch)
-- [proot-distro doesn't work](#proot-distro-doesnt-work)
+- [proot-distro issues](#proot-distro-issues)
 - [Node.js v24 hangs](#nodejs-v24-hangs)
 - [Process killed randomly](#process-killed-randomly)
 - [EMFILE errors](#emfile-errors)
@@ -111,30 +111,42 @@ Or the auth URL prints to the terminal but nothing happens when you visit it, or
 
 ---
 
-### proot-distro doesn't work
+### proot-distro issues
 
-**You see:** Inside a `proot-distro` guest (Ubuntu, Debian, etc.), Claude Code produces no output, hangs, or behaves erratically. Commands may appear to run but return nothing.
+**You see:** Inside a `proot-distro` guest (Ubuntu, Debian, etc.), Claude Code produces no output or hangs.
 
 ```
 $ proot-distro login ubuntu
-root@localhost:~# npx claude
+root@localhost:~# claude
 █
 ```
 
-There is no error message. You will see commands hang or produce empty output inside the guest distribution.
-
-**Fix:** Do not use `proot-distro` for Claude Code. Install and run everything natively in Termux:
+**Current status:** proot-distro **works** on Android 16 / kernel 6.12 with current proot versions (5.1.107-66+). A TCGETS2 ioctl bug that previously broke stdout in guest distros was fixed in October 2025. If you are seeing this issue, update proot first:
 
 ```bash
-pkg install nodejs git curl proot -y
-export TMPDIR=$PREFIX/tmp
-npm install -g @anthropic-ai/claude-code
-proot -b $PREFIX/tmp:/tmp claude
+pkg upgrade proot proot-distro -y
 ```
 
-You only need `proot` for the single bind mount (`/tmp`), not a full guest OS.
+**If it still hangs after updating proot:**
 
-**Cause:** Android's kernel (6.12.x on Android 16, and similar restrictions on 14+) breaks proot's stdout file descriptor binding inside guest distributions. This is a kernel-level restriction, not a configuration issue. There is no fix within the guest distro.
+1. Check your proot version — must be 5.1.107-66 or later:
+   ```bash
+   dpkg -s proot | grep Version
+   ```
+
+2. Test with a simple command instead of interactive login:
+   ```bash
+   proot-distro login ubuntu -- sh -c 'echo hello'
+   ```
+
+3. If the simple command works but interactive login hangs, the issue may be terminal initialization. Try:
+   ```bash
+   proot-distro login ubuntu -- bash --norc --noprofile
+   ```
+
+**The warning `can't sanitize binding "/proc/self/fd/1"`** appears during proot-distro login and is harmless. stdout works correctly despite this message.
+
+**Note:** proot-distro is a valid alternative to the native Termux approach. See [INSTALL.md — Path B](INSTALL.md#path-b-proot-distro-ubuntu) for the full setup guide. However, for Claude Code alone, the native Termux approach (Path A) is lighter and faster.
 
 ---
 
