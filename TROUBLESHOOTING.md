@@ -198,6 +198,8 @@ Or the Claude Code session simply vanishes and you're back at your shell prompt.
 
 **Cause:** Android's phantom process killer. Android limits background processes to approximately 32 across all apps. When Termux spawns multiple Node.js processes (Claude Code, subagents, language servers), the OS silently kills excess processes.
 
+**Session persistence with tmux:** Install tmux (`pkg install tmux`) and run Claude Code inside a tmux session (`tmux new -s claude`). If Android kills the Termux app, your session survives — reopen Termux and run `tmux attach -t claude` to resume.
+
 ---
 
 ### EMFILE errors

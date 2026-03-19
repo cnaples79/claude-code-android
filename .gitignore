@@ -6,6 +6,19 @@ Thumbs.db
 *.swp
 *~
 
-# Environment files
+# Environment and secrets
 .env
 .env.*
+*.pem
+*.key
+*credentials*
+*secret*
+*token*
+
+# Session artifacts
+*.log
+*.pid
+*.tmp
+
+# Claude Code internal state
+.claude_session

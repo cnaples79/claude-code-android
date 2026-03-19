@@ -1,10 +1,10 @@
 # Contributing
 
-This is a one-person project. Contributions are welcome, but response times vary.
+This project is maintained by a human operator working with Claude Code as an AI development partner. Contributions are welcome, but response times vary.
 
 ## Reporting Bugs
 
-Use the [bug report issue template](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=bug_report.yml). Include:
+Use the [bug report template](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=bug_report.md). Include:
 
 - Device model and Android version
 - Node.js version (`node -v`)
@@ -13,7 +13,7 @@ Use the [bug report issue template](https://github.com/ferrumclaudepilgrim/claud
 
 ## Reporting Device Compatibility
 
-Use the [device compatibility issue template](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_compatibility.yml). Working reports are just as useful as broken ones.
+Use the [device report template](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md). Working reports are just as useful as broken ones.
 
 ## Submitting Fixes
 

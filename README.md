@@ -38,7 +38,7 @@ Or do it manually (4 commands):
 
 ```bash
 pkg install nodejs git proot ripgrep -y
-export TMPDIR=$PREFIX/tmp
+export TMPDIR=$PREFIX/tmp   # Critical: npm fails silently without this
 npm install -g @anthropic-ai/claude-code
 proot -b $PREFIX/tmp:/tmp claude
 ```
@@ -83,10 +83,12 @@ Node.js v24 hangs on startup under Termux on ARM64. The cause is unclear but upg
 
 | File | What It Is |
 |------|-----------|
-| **[INSTALL.md](INSTALL.md)** | Complete step-by-step install guide with verification |
+| **[install.sh](install.sh)** | One-command installer — packages, Claude Code, ripgrep fix, shell config |
+| **[INSTALL.md](INSTALL.md)** | Complete step-by-step install guide with Path A (native) and Path B (proot-distro) |
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common failures with symptoms, causes, and fixes |
 | **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | A CLAUDE.md template for giving Claude Code persistent rules and identity on Android |
-| **[LICENSE](LICENSE)** | MIT |
+| **[CHANGELOG.md](CHANGELOG.md)** | Version history |
+| **[.claude/skills/](.claude/skills/)** | Android-specific Claude Code skills (/doctor, /fix-ripgrep, termux-safe) |
 
 ---
 
@@ -100,7 +102,7 @@ Running on a phone means real limits. Know them upfront:
 | No systemd | No services, no daemons the normal way | Use `crond` or shell scripts for persistence |
 | ~512MB Node.js heap | Large datasets must stream | Don't buffer — stream and process incrementally |
 | ~1024 file descriptors | Heavy I/O can hit EMFILE | Limit concurrent processes |
-| Phantom process killer | Android kills excess background processes | Limit to 2-3 background processes max |
+| Phantom process killer | Android kills excess background processes | Use `tmux`, limit to 2-3 background processes |
 | /tmp is volatile | proot crash = mount gone | Never store persistent state in /tmp |
 
 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
@@ -128,7 +130,7 @@ Claude Code is made by [Anthropic](https://www.anthropic.com). Official repo: [a
 
 ## Skills for Android
 
-This repo includes [Claude Code skills](https://code.claude.com/docs/en/skills) — the first Android/Termux-specific skills in the ecosystem.
+This repo includes [Claude Code skills](https://code.claude.com/docs/en/skills) built specifically for Android/Termux environments.
 
 | Skill | What It Does | How to Use |
 |-------|-------------|-----------|
@@ -142,10 +144,10 @@ Copy the skills to your home directory so they work in any project:
 
 ```bash
 git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
+mkdir -p ~/.claude/skills
 cp -r claude-code-android/.claude/skills/* ~/.claude/skills/
+rm -rf claude-code-android    # Clean up — phone storage is finite
 ```
-
-Or if you've already cloned, just copy the skills directory.
 
 ---
 
@@ -165,6 +167,12 @@ Found a bug? Got it working on a new device? Know a better workaround?
 
 ---
 
+## About This Project
+
+This repo is built and maintained using Claude Code running on the same Android device it documents. The operator ([FerrumFluxFenice](https://github.com/FerrumFluxFenice)) directs the work — technical decisions, verification, and editorial judgment are human-directed. The implementation is a human-AI collaboration, and the commit history reflects that honestly.
+
+If you're curious about the workflow: Claude Code operates inside Termux with a multi-agent architecture (5 specialized agents), a hook system for safety gates, and Telegram-based operator approval for public actions. The [CLAUDE.md template](CONSTITUTION-TEMPLATE.md) in this repo is a generalized version of the system that built it.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
@@ -173,5 +181,5 @@ MIT. See [LICENSE](LICENSE).
 
 <p align="center">
   <em>Built on a phone, in Termux, through proot, on ARM64, on Android.</em><br>
-  <em>Because the only computer you need is the one in your pocket.</em>
+  <em>By a human and an AI, working together.</em>
 </p>
