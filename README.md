@@ -5,6 +5,10 @@
 </p>
 
 <p align="center">
+  <img src="screenshot.jpg" alt="Claude Code running on Samsung Galaxy S26 Ultra" width="300">
+</p>
+
+<p align="center">
   <strong>Run Claude Code natively on Android — no root, no emulator, no cloud VM.</strong>
 </p>
 
