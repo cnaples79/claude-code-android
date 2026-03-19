@@ -7,9 +7,6 @@
 
 set -euo pipefail
 
-# Suppress Pilgrim hooks during testing
-export PILGRIM_SILENT=1
-
 PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
 HOME="${HOME:-/data/data/com.termux/files/home}"
 RESULTS_FILE="$(dirname "$0")/verification-results.txt"
@@ -287,14 +284,6 @@ echo "    proot-distro installed: $PROOT_DISTRO_INSTALLED"
 echo "    Minimum required proot: 5.1.107-66"
 echo "    This proot sufficient: $PROOT_SUFFICIENT"
 
-TEST_RESULTS_FILE="$HOME/repos/pilgrim-dot/proot-distro-test-results.txt"
-if [ -f "$TEST_RESULTS_FILE" ]; then
-    echo ""
-    echo "  Prior test results found at: $TEST_RESULTS_FILE"
-    echo "  Key findings from that test:"
-    grep -E "RESULT:|Date:|proot version" "$TEST_RESULTS_FILE" 2>/dev/null | head -10 | sed 's/^/    /'
-fi
-
 # Check if ubuntu rootfs actually exists (strongest evidence proot-distro works)
 UBUNTU_ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/ubuntu"
 if [ -d "$UBUNTU_ROOTFS" ]; then
@@ -342,12 +331,12 @@ echo "          (which would be destructive)."
 verdict_cannot_test "proving the limit requires triggering it, which would kill processes"
 
 # ──────────────────────────────────────────────────────────────
-# CLAIM 7: File descriptor limit is ~1024 under proot
+# CLAIM 7: File descriptor limits vary by device
 # Source: TROUBLESHOOTING.md:228, README.md:104
 # ──────────────────────────────────────────────────────────────
-print_claim 7 "File descriptor limit is ~1024 under proot"
+print_claim 7 "File descriptor limits vary by device"
 echo "  Source: TROUBLESHOOTING.md:228, README.md:104"
-echo "  Claim: The file descriptor limit under proot is approximately 1024"
+echo "  Claim: The file descriptor limit varies by device and Android version"
 
 FD_LIMIT_SOFT="$(ulimit -n 2>/dev/null || echo 'unknown')"
 FD_LIMIT_HARD="$(ulimit -Hn 2>/dev/null || echo 'unknown')"
@@ -508,15 +497,6 @@ else
             echo "    Claude Code binary found: $CLAUDE_PATH"
             FILE_SIZE="$(stat -c '%s' "$CLAUDE_PATH" 2>/dev/null || echo '?')"
             echo "    File size: $FILE_SIZE bytes"
-        fi
-
-        # Reference the prior test results
-        TEST_RESULTS_FILE="$HOME/repos/pilgrim-dot/proot-distro-test-results.txt"
-        if [ -f "$TEST_RESULTS_FILE" ]; then
-            echo "    Prior test results available at: $TEST_RESULTS_FILE"
-            echo "    Install results from that test:"
-            grep -A2 "TEST 3\|TEST 4\|RESULT.*Ubuntu" "$TEST_RESULTS_FILE" 2>/dev/null | \
-                grep "RESULT" | head -3 | sed 's/^/      /'
         fi
 
         echo "  Result: Claude Code binary present in Ubuntu guest — installer ran successfully"

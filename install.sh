@@ -12,10 +12,10 @@
 #
 # What this script does:
 #   1. Checks you're running in Termux
-#   2. Installs required packages (nodejs, git, proot)
+#   2. Installs required packages (nodejs, git, curl, proot, ripgrep)
 #   3. Sets TMPDIR for npm
 #   4. Installs Claude Code via npm
-#   5. Installs ripgrep and creates the arm64-android symlink
+#   5. Creates the arm64-android ripgrep symlink
 #   6. Adds a launch alias to ~/.bashrc
 #
 # What this script does NOT do:
@@ -58,8 +58,8 @@ ok "TMPDIR set to $TMPDIR"
 
 # --- Step 2: Install packages ---
 
-info "Installing packages (nodejs, git, proot, ripgrep)..."
-pkg install nodejs git proot ripgrep -y || fail "Package installation failed. Check your internet connection."
+info "Installing packages (nodejs, git, curl, proot, ripgrep)..."
+pkg install nodejs git curl proot ripgrep -y || fail "Package installation failed. Check your internet connection."
 
 # Verify Node.js version
 NODE_VER=$(node -v 2>/dev/null || echo "none")

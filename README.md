@@ -46,7 +46,7 @@ You need **Termux** installed from **F-Droid** (not the Play Store — the Play 
 Four commands. Termux open. Go.
 
 ```bash
-pkg install nodejs git proot ripgrep -y
+pkg install nodejs git curl proot ripgrep -y
 export TMPDIR=$PREFIX/tmp   # Critical: npm fails silently without this
 npm install -g @anthropic-ai/claude-code
 proot -b $PREFIX/tmp:/tmp claude

@@ -278,9 +278,9 @@ Search tools (Grep, Glob) and slash commands that depend on them crash immediate
 
 ```bash
 pkg install ripgrep -y
-VENDOR_DIR="$(dirname $(which claude))/../lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep"
+VENDOR_DIR="$(dirname "$(command -v claude)")/../lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep"
 mkdir -p "$VENDOR_DIR/arm64-android"
-ln -sf "$(which rg)" "$VENDOR_DIR/arm64-android/rg"
+ln -sf "$(command -v rg)" "$VENDOR_DIR/arm64-android/rg"
 ```
 
 **Important:** This symlink breaks on Claude Code updates. Re-run the `mkdir` and `ln` commands after every `npm update -g @anthropic-ai/claude-code`.

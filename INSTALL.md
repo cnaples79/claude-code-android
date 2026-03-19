@@ -12,7 +12,7 @@ Before you begin, confirm you have the following:
 |-----------|-------------|
 | **Device** | aarch64 Android device (ARM64) |
 | **OS** | Android 14+ |
-| **Kernel** | 6.12.x (`uname -r` to verify) |
+| **Kernel** | Varies by Android version — use `uname -r` to check (Android 14/15 use 5.10–6.6, Android 16 uses 6.12) |
 | **Terminal** | [Termux from F-Droid](https://f-droid.org/en/packages/com.termux/) — **not** the Play Store version, which is outdated and will fail |
 | **Subscription** | Claude Max or Claude Pro (provides the API access Claude Code requires) |
 | **Network** | Active internet connection (Claude Code streams from Anthropic's API) |
@@ -45,7 +45,7 @@ This guide has two installation paths. Pick one before you start.
 
 Android requires solving problems that have stopped others. Some are universal, some are Android 16-specific. Understanding them will save you hours.
 
-> **Note:** Problems 1 and 3 are Android 16-specific. The /tmp fix (Problem 2) applies to all Android versions.
+> **Note:** Problem 1 (proot-distro TCGETS2 bug) is Android 16-specific — it only affects kernel 6.12. Problem 3 (Node.js v24 hang) affects all ARM64 Termux installs regardless of Android version. The /tmp fix (Problem 2) applies to all Android versions.
 
 ### Problem 1: proot-distro Is a Detour, Not a Dead End
 
@@ -76,7 +76,7 @@ The solution skips the guest distro — not because it's broken (it isn't, as of
 Key paths and versions for a working installation:
 
 - **Architecture:** aarch64 (ARM64)
-- **Kernel:** 6.12.x (Android 16) — earlier Android versions use different kernels — verify with `uname -r`
+- **Kernel:** Varies by Android version — verify with `uname -r` (Android 14/15: 5.10–6.6, Android 16: 6.12)
 - **Shell:** Termux
 - **Home:** `/data/data/com.termux/files/home`
 - **Prefix:** `/data/data/com.termux/files/usr`
@@ -119,7 +119,7 @@ npm install -g @anthropic-ai/claude-code
 
 This installs Claude Code globally via npm. With `TMPDIR` set correctly, npm can stage files and complete the installation cleanly.
 
-> **Note:** Anthropic now offers a native installer (`curl -fsSL https://claude.ai/install.sh | bash`) as the preferred installation method. However, the native installer targets standard Linux platforms and may not detect Termux correctly. The npm method remains reliable for native Termux installs. If you use [Path B (proot-distro Ubuntu)](#path-b-proot-distro-ubuntu), the native installer works there since the guest reports as standard Linux.
+> **Note:** Anthropic now offers a native installer (`curl -fsSL https://claude.ai/install.sh | bash`) as the preferred installation method. The native installer does not work in native Termux due to SSL library compatibility issues — use npm for Path A. The native installer works correctly in Path B (proot-distro Ubuntu) where the library stack is standard Linux.
 
 ---
 
