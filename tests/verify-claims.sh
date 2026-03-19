@@ -3,13 +3,22 @@
 # Safe to run on a live device. Non-destructive. Restores all state.
 #
 # Usage: bash tests/verify-claims.sh
-# Results: stdout + tests/verification-results.txt
+# Results: stdout + tests/results/<device>-<android>.txt
+#
+# Results are saved per-device. Submit yours via PR to help build
+# the compatibility database.
 
 set -euo pipefail
 
 PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
 HOME="${HOME:-/data/data/com.termux/files/home}"
-RESULTS_FILE="$(dirname "$0")/verification-results.txt"
+
+# Generate a device-specific filename
+DEVICE_MODEL=$(getprop ro.product.model 2>/dev/null | tr ' ' '-' | tr '[:upper:]' '[:lower:]' || echo "unknown")
+ANDROID_VER=$(getprop ro.build.version.release 2>/dev/null || echo "unknown")
+RESULTS_DIR="$(dirname "$0")/results"
+mkdir -p "$RESULTS_DIR"
+RESULTS_FILE="${RESULTS_DIR}/${DEVICE_MODEL:-unknown}-android${ANDROID_VER:-unknown}.txt"
 
 # Counters
 CONFIRMED=0

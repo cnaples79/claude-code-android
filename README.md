@@ -166,7 +166,7 @@ Verified on three devices, two Android versions, two chipsets:
 | Google Pixel 8/9 | 15-16 | Untested | Untested | — |
 | OnePlus 12/13 | 14-15 | Untested | Untested | — |
 
-**Verified** means install, authentication, and basic operations tested end-to-end on real hardware. Test results: [tests/verification-results.txt](tests/verification-results.txt)
+**Verified** means install, authentication, and basic operations tested end-to-end on real hardware. Test results: [tests/results/](tests/results/)
 
 **Tested on your device?** [Submit a device report](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) to fill in the gaps.
 

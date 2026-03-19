@@ -184,7 +184,7 @@ git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
 bash claude-code-android/tests/verify-claims.sh
 ```
 
-This tests all documentation claims against your actual device. Results are saved to `tests/verification-results.txt`.
+This tests all documentation claims against your actual device. Results are saved to `tests/results/<your-device>.txt`. Submit yours via PR to help build the compatibility database.
 
 ---
 

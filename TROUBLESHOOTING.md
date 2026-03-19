@@ -391,3 +391,23 @@ Known issues filed against the Claude Code repository that affect Android/Termux
 | [#16615](https://github.com/anthropics/claude-code/issues/16615) | Platform detection — `android` not recognized | Open (stale) | cli.js patching |
 | [#9435](https://github.com/anthropics/claude-code/issues/9435) | Missing arm64-android ripgrep binary | Closed | System ripgrep + symlink |
 | [PR #31701](https://github.com/anthropics/claude-code/pull/31701) | Fix: respect `$TMPDIR` instead of hardcoding `/tmp` | Open PR | — |
+
+---
+
+## Paths We're Watching
+
+### Android Virtualization Framework (AVF) — Not Recommended Yet
+
+Android 16 includes a built-in Linux terminal via the Android Virtualization Framework (AVF), available on some devices (Pixel 6+, some Samsung Exynos models). We've evaluated it as a potential Path C — a real Linux VM with native `/tmp`, no proot overhead, and `process.platform === "linux"`.
+
+**Current limitations that prevent recommendation:**
+
+- **4GB RAM cap** regardless of device RAM — OOM kills during moderate workloads
+- **Network goes through NAT** via Android's Tethering Manager — SSH and API calls can fail unpredictably
+- **Crashes lose data** — the Terminal app marks any unclean shutdown as "VM damaged" and requires full reinstall
+- **Snapdragon devices not supported** — Qualcomm only supports "protected" VMs, not the mode the Terminal app requires
+- **Background killing** — Android can suspend the VM when Termux is backgrounded
+
+**We'll revisit when:** network works reliably, RAM cap is raised or configurable, and at least one confirmed report of Claude Code completing a real task end-to-end without a crash.
+
+**Experimenting with AVF?** [Open an issue](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) with your findings — we're actively tracking this.
