@@ -2,6 +2,7 @@
 name: fix-ripgrep
 description: Fix Claude Code's broken Grep/Glob tools on Android by installing system ripgrep and symlinking it into the vendor directory.
 user-invocable: true
+disable-model-invocation: true
 argument-hint: (no arguments needed)
 allowed-tools: Bash, Read
 ---

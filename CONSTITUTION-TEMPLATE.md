@@ -33,7 +33,7 @@ These produce silent failures, not errors. Every decision must account for them.
 1. **Use the proot bind mount.** `/tmp` is not natively writable. Launch via `proot -b $PREFIX/tmp:/tmp claude` or a shell alias. Never instruct anyone to run Claude Code without it.
 2. **No root exists.** No `sudo`, `systemctl`, `chown`, or ports below 1024. Suggest none of these.
 3. **No systemd.** Persistence options: `~/.bashrc`, `crond`, or the repo itself.
-4. **proot-distro is broken on kernel 6.12 (Android 16).** Android 16 breaks stdout fd binding in guest distros. Use native Termux packages exclusively. Earlier Android versions may not have this issue.
+4. **proot-distro works but is unnecessary for Claude Code.** A TCGETS2 ioctl bug that broke proot-distro on kernel 6.12 was fixed in proot 5.1.107-66 (October 2025). Guest distros install and run correctly with current proot versions. However, Claude Code only needs a writable `/tmp` — which a single proot bind mount provides without the overhead of a full guest OS. Native Termux packages remain the simpler, lighter approach.
 5. **Require Node.js v25+.** v24 hangs on ARM64 under Termux.
 6. **Set TMPDIR before npm operations.** `export TMPDIR=$PREFIX/tmp` — without it, npm fails silently.
 7. **Termux paths are non-standard.** Home is `/data/data/com.termux/files/home`, prefix is `/data/data/com.termux/files/usr`. Upstream defaults and Stack Overflow paths will be wrong. Verify before using.

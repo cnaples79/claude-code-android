@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0] — 2026-03-19
+
+### Repo Quality Pass
+
+- Fixed false proot-distro claim in CONSTITUTION-TEMPLATE.md (was shipping wrong info to every user who copied it)
+- Added "Keeping It Running" section to INSTALL.md (update, ripgrep re-fix, uninstall)
+- Added shields.io badges to README (license, Android version, Node.js version, Claude Code version, last verified date)
+- Populated device compatibility table with verified device (Samsung Galaxy S26 Ultra) and common devices as "untested"
+- Added `disable-model-invocation: true` to `/fix-ripgrep` skill (prevents auto-invocation of a skill that installs packages)
+
 ## [0.3.0] — 2026-03-19
 
 ### Documentation Correction — proot-distro Works on Android 16

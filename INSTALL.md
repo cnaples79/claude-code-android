@@ -183,11 +183,44 @@ Community-reported working configurations:
 
 | Device | Android Version | Kernel | Termux Source | Node.js | Status |
 |--------|----------------|--------|---------------|---------|--------|
-| aarch64 Android device | Android 16 | 6.12.x | F-Droid | v25.8.1 | Verified |
+| Samsung Galaxy S26 Ultra | Android 16 | 6.12.30 | F-Droid | v25.8.1 | Verified |
 
-Tested on Android 16. Expected to work on Android 14+ but not yet verified on earlier versions. If you have tested this guide on your device, please open an issue or PR to add your configuration to this table.
+Both Path A (native Termux) and Path B (proot-distro Ubuntu) verified on this device. Expected to work on Android 14+ with any aarch64 device. [Submit a device report](../../issues/new?template=device_report.md) if you've tested on different hardware.
 
 ---
+
+## Keeping It Running
+
+### Updating Claude Code
+
+```bash
+export TMPDIR=$PREFIX/tmp
+npm update -g @anthropic-ai/claude-code
+```
+
+After updating, the ripgrep symlink breaks (Claude Code replaces its vendor directory). Re-run `/fix-ripgrep` in your next session, or manually:
+
+```bash
+VENDOR_DIR="$(dirname "$(command -v claude)")/../lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep"
+mkdir -p "$VENDOR_DIR/arm64-android"
+ln -sf "$(command -v rg)" "$VENDOR_DIR/arm64-android/rg"
+```
+
+### Updating Termux packages
+
+```bash
+pkg upgrade
+```
+
+This updates proot, Node.js, and other dependencies. After a Node.js major version upgrade, verify Claude Code still launches.
+
+### Uninstalling
+
+```bash
+npm uninstall -g @anthropic-ai/claude-code
+```
+
+Remove the alias from `~/.bashrc` if you added one. Remove `~/.claude/` to clear all configuration.
 
 ---
 

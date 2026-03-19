@@ -9,6 +9,14 @@
 </p>
 
 <p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Android-14%2B-brightgreen.svg" alt="Android 14+">
+  <img src="https://img.shields.io/badge/Node.js-v25%2B-green.svg" alt="Node.js v25+">
+  <img src="https://img.shields.io/badge/Verified-Claude%20Code%202.1.79-blue.svg" alt="Verified with Claude Code 2.1.79">
+  <img src="https://img.shields.io/badge/Last%20Verified-March%202026-lightgrey.svg" alt="Last Verified March 2026">
+</p>
+
+<p align="center">
   <a href="INSTALL.md">Install Guide</a> · <a href="TROUBLESHOOTING.md">Troubleshooting</a> · <a href="CONSTITUTION-TEMPLATE.md">CLAUDE.md Template</a>
 </p>
 
@@ -93,11 +101,16 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
 
 Verified working on:
 
-| Device | Android | Kernel | Termux Source | Node.js | Status |
-|--------|---------|--------|--------------|---------|--------|
-| aarch64 Android device | 14+ | 6.12.x | F-Droid | v25.8.1 | Works |
+| Device | Android | Kernel | Path | Node.js | Status |
+|--------|---------|--------|------|---------|--------|
+| Samsung Galaxy S26 Ultra | 16 | 6.12.30 | A + B | v25.8.1 | Verified |
+| Samsung Galaxy S24/S25 | 15-16 | — | — | — | Untested |
+| Google Pixel 8/9 | 15-16 | — | — | — | Untested |
+| OnePlus 12/13 | 14-15 | — | — | — | Untested |
 
-**Tested on your device?** [Submit a device report](../../issues/new?template=device_report.md) so others know.
+Expected to work on any aarch64 device running Android 14+ with Termux from F-Droid.
+
+**Tested on your device?** [Submit a device report](../../issues/new?template=device_report.md) to fill in the gaps.
 
 Claude Code is made by [Anthropic](https://www.anthropic.com). Official repo: [anthropics/claude-code](https://github.com/anthropics/claude-code).
 
