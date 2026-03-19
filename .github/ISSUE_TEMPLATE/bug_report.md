@@ -12,9 +12,12 @@ assignees: ''
 - **Android version:** (e.g., Android 16)
 - **Kernel version:** (output of `uname -r`)
 - **Termux source:** (F-Droid / GitHub)
+- **Install path:** (A — native Termux with proot bind mount, or B — proot-distro Ubuntu)
 - **Launched with proot?** (yes/no, and the exact proot command used)
 - **Node.js version:** (output of `node -v`)
 - **Claude Code version:** (output of `claude --version`)
+- **`echo $TMPDIR` output:** (paste result)
+- **`echo $CLAUDE_CODE_TMPDIR` output:** (paste result, or "not set")
 
 ## Steps to Reproduce
 

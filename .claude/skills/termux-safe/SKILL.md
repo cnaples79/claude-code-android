@@ -6,6 +6,8 @@ user-invocable: false
 
 # Android / Termux Environment Constraints
 
+> **Scope:** These constraints apply to native Termux only. Inside a proot-distro guest (Path B), standard Linux rules apply — `apt` works normally, `/tmp` is writable, paths are standard.
+
 You are running inside Termux on Android (aarch64). These constraints produce **silent failures, not errors.** Every suggestion must account for them.
 
 ## Hard Rules — Never Suggest These

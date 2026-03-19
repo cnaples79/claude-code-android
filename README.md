@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <em>Left: Samsung Galaxy S26 Ultra (Android 16) · Right: Samsung Galaxy S23+ (Android 15)</em>
+</p>
+
+<p align="center">
   <strong>Run Claude Code natively on Android — no root, no emulator, no cloud VM.</strong>
 </p>
 
@@ -173,7 +177,8 @@ cd ~
 git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
 mkdir -p ~/.claude/skills
 cp -r claude-code-android/.claude/skills/* ~/.claude/skills/
-rm -rf claude-code-android    # Clean up — phone storage is finite
+ls ~/.claude/skills/                      # Verify: should show doctor, fix-ripgrep, termux-safe
+rm -rf claude-code-android                # Clean up — phone storage is finite
 ```
 
 ---
@@ -196,7 +201,7 @@ Found a bug? Got it working on a new device? Know a better workaround?
 
 ## About This Project
 
-This repo is built and maintained using Claude Code running on the same Android device it documents. The operator ([FerrumFluxFenice](https://github.com/FerrumFluxFenice)) directs the work — technical decisions and verification are human-directed. The commit history reflects that collaboration honestly.
+This repo is built and maintained using Claude Code running on the same Android device it documents — the tool documenting itself, on the platform it's documenting. The operator ([FerrumFluxFenice](https://github.com/FerrumFluxFenice)) guides the work, Claude Code builds it, and every claim is verified on real hardware. The commit history reflects that collaboration honestly.
 
 ## License
 
