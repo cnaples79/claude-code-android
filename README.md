@@ -5,7 +5,8 @@
 </p>
 
 <p align="center">
-  <img src="screenshot.jpg" alt="Claude Code running on Samsung Galaxy S26 Ultra" width="300">
+  <img src="screenshot.jpg" alt="Claude Code running on Samsung Galaxy S26 Ultra" width="280">
+  <img src="screenshot-s23plus.jpg" alt="Claude Code verified on Samsung Galaxy S23+" width="280">
 </p>
 
 <p align="center">
