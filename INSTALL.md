@@ -11,7 +11,7 @@ Before you begin, confirm you have the following:
 | Component | Requirement |
 |-----------|-------------|
 | **Device** | aarch64 Android device (ARM64) |
-| **OS** | Android 16 |
+| **OS** | Android 14+ |
 | **Kernel** | 6.12.x (`uname -r` to verify) |
 | **Terminal** | [Termux from F-Droid](https://f-droid.org/en/packages/com.termux/) — **not** the Play Store version, which is outdated and will fail |
 | **Subscription** | Claude Max or Claude Pro (provides the API access Claude Code requires) |
@@ -23,7 +23,9 @@ Before you begin, confirm you have the following:
 
 ## Why This Is Hard
 
-Running Claude Code on Android 16 requires solving three distinct problems that have stopped others. Understanding them will save you hours.
+Android requires solving problems that have stopped others. Some are universal, some are Android 16-specific. Understanding them will save you hours.
+
+> **Note:** Problems 1 and 3 are Android 16-specific. The /tmp fix (Problem 2) applies to all Android versions.
 
 ### Problem 1: Android 16 Breaks proot-distro
 
@@ -48,7 +50,7 @@ The solution skips the guest distro entirely. Install Claude Code natively insid
 Key paths and versions for a working installation:
 
 - **Architecture:** aarch64 (ARM64)
-- **Kernel:** 6.12.x (Android 16) — verify with `uname -r`
+- **Kernel:** 6.12.x (Android 16) — earlier Android versions use different kernels — verify with `uname -r`
 - **Shell:** Termux
 - **Home:** `/data/data/com.termux/files/home`
 - **Prefix:** `/data/data/com.termux/files/usr`
@@ -64,10 +66,10 @@ There is no root access. There is no systemd. There is no `/tmp` in the way most
 Open Termux and run:
 
 ```bash
-pkg install nodejs git curl -y
+pkg install nodejs git curl proot -y
 ```
 
-This installs Node.js v25+, git, and curl. All three are required — Node.js runs Claude Code, git is needed for repository operations, and curl is used during authentication flows.
+This installs Node.js v25+, git, curl, and proot. All four are required — Node.js runs Claude Code, git is needed for repository operations, curl is used during authentication flows, and proot handles the `/tmp` bind mount at launch.
 
 ---
 
@@ -97,11 +99,7 @@ This installs Claude Code globally. With `TMPDIR` set correctly, npm can stage f
 
 Claude Code hardcodes `/tmp` for runtime state. The fix is `proot` — a userspace path remapper that requires no root privileges. It intercepts system calls and makes `/tmp` point to Termux's writable tmp directory.
 
-Install proot if you don't already have it:
-
-```bash
-pkg install proot -y
-```
+proot was installed in Step 1.
 
 Launch Claude Code:
 
@@ -111,7 +109,7 @@ proot -b $PREFIX/tmp:/tmp claude
 
 This single invocation binds Termux's writable tmp directory to `/tmp`, allowing Claude Code to operate as if it were on a standard Linux system. No root. No containers. No virtualization. Just syscall interception.
 
-On first launch, Claude Code will prompt you to authenticate with your Anthropic account.
+On first launch, Claude Code will prompt you to authenticate. A URL will appear in your terminal — open it in your phone's browser to complete OAuth. If authentication fails, see the [OAuth troubleshooting entry](TROUBLESHOOTING.md#oauth--authentication-fails-on-first-launch).
 
 ---
 
@@ -179,7 +177,7 @@ Community-reported working configurations:
 |--------|----------------|--------|---------------|---------|--------|
 | aarch64 Android device | Android 16 | 6.12.x | F-Droid | v25.8.1 | Verified |
 
-If you have tested this guide on your device, please open an issue or PR to add your configuration to this table.
+Tested on Android 16. Expected to work on Android 14+ but not yet verified on earlier versions. If you have tested this guide on your device, please open an issue or PR to add your configuration to this table.
 
 ---
 

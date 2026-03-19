@@ -12,6 +12,7 @@ assignees: ''
 - **Android version:** (e.g., Android 16)
 - **Kernel version:** (output of `uname -r`)
 - **Termux source:** (F-Droid / GitHub)
+- **Launched with proot?** (yes/no, and the exact proot command used)
 - **Node.js version:** (output of `node -v`)
 - **Claude Code version:** (output of `claude --version`)
 

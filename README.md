@@ -1,7 +1,7 @@
 # Claude Code on Android
 
 <p align="center">
-  <img src="pilgrim-logo.jpg" alt="Pilgrim" width="200">
+  <img src="logo.jpg" alt="Claude Code on Android" width="200">
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="INSTALL.md">Full Install Guide</a> · <a href="TROUBLESHOOTING.md">Troubleshooting</a> · <a href="CONSTITUTION-TEMPLATE.md">CLAUDE.md Template</a>
+  <a href="INSTALL.md">Install Guide</a> · <a href="TROUBLESHOOTING.md">Troubleshooting</a> · <a href="CONSTITUTION-TEMPLATE.md">CLAUDE.md Template</a>
 </p>
 
 ---
@@ -26,6 +26,8 @@ proot -b $PREFIX/tmp:/tmp claude
 ```
 
 That's it. Claude Code is running on your phone.
+
+> **Note:** The Quick Start commands work for this session. Add TMPDIR to your .bashrc (shown below) to make it permanent.
 
 Add this to `~/.bashrc` so it sticks:
 
@@ -45,7 +47,7 @@ Now just type `claude-android`.
 
 Running Claude Code on Android requires solving three problems that have stopped others:
 
-### 1. proot-distro is broken on Android 16
+### 1. proot-distro is broken on Android 16 (Android 16 specific)
 
 The kernel's security model breaks stdout file descriptor binding inside guest distributions. Processes launch but produce no output. **There is no fix inside the guest distro.** The solution: skip guest distros entirely. Run Claude Code natively in Termux.
 
@@ -64,7 +66,7 @@ Node.js v24 hangs on startup under Termux on ARM64. The cause is unclear but upg
 | File | What It Is |
 |------|-----------|
 | **[INSTALL.md](INSTALL.md)** | Complete step-by-step install guide with verification |
-| **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | 9 common failures with symptoms, causes, and fixes |
+| **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common failures with symptoms, causes, and fixes |
 | **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | A CLAUDE.md template for giving Claude Code persistent rules and identity on Android |
 | **[LICENSE](LICENSE)** | MIT |
 
@@ -93,25 +95,17 @@ Verified working on:
 
 | Device | Android | Kernel | Termux Source | Node.js | Status |
 |--------|---------|--------|--------------|---------|--------|
-| aarch64 Android device | 16 (One UI 8.5) | 6.12.x | F-Droid | v25.8.1 | Works |
+| aarch64 Android device | 14+ | 6.12.x | F-Droid | v25.8.1 | Works |
 
 **Tested on your device?** [Submit a device report](../../issues/new?template=device_report.md) so others know.
+
+Claude Code is made by [Anthropic](https://www.anthropic.com). Official repo: [anthropics/claude-code](https://github.com/anthropics/claude-code).
 
 ---
 
 ## The CLAUDE.md Template
 
-Claude Code reads a `CLAUDE.md` file from your project root on every session start. It's how you give the AI persistent rules, identity, and constraints — a constitution.
-
-The [CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md) in this repo is a ready-to-fork template designed for Android/Termux. It includes:
-
-- Android 16 constraints (the silent failures that waste hours)
-- Autonomy tiers (what the AI can do without asking)
-- Subagent rules (if you use Claude Code's agent system)
-- Git safety rules
-- Secrets protection
-
-Fork it. Rename the placeholders. Make it yours.
+Claude Code reads a CLAUDE.md file from your project root for persistent rules. The [template](CONSTITUTION-TEMPLATE.md) in this repo is ready to fork for Android/Termux — includes platform constraints, safety rules, and agent configuration.
 
 ---
 
@@ -132,6 +126,6 @@ MIT. See [LICENSE](LICENSE).
 ---
 
 <p align="center">
-  <em>Built on a phone, in Termux, through proot, on ARM64, on Android 16.</em><br>
+  <em>Built on a phone, in Termux, through proot, on ARM64, on Android.</em><br>
   <em>Because the only computer you need is the one in your pocket.</em>
 </p>

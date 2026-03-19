@@ -1,16 +1,40 @@
 # Troubleshooting Claude Code on Android
 
-This guide covers problems specific to running Claude Code on **Android 16 + Termux** (aarch64/ARM64). Each entry describes a symptom, its cause, and how to fix it.
+This guide covers problems specific to running Claude Code on **Android 14+ with Termux** (aarch64/ARM64). Each entry starts with the error you see, then the fix, then the explanation.
 
 If you haven't installed yet, see [INSTALL.md](INSTALL.md) first.
 
 ---
 
+## Table of Contents
+
+- [Claude Code hangs on startup](#claude-code-hangs-on-startup)
+- [Claude Code won't start, no error](#claude-code-wont-start-no-error)
+- [OAuth / authentication fails on first launch](#oauth--authentication-fails-on-first-launch)
+- [proot-distro doesn't work](#proot-distro-doesnt-work)
+- [Node.js v24 hangs](#nodejs-v24-hangs)
+- [Process killed randomly](#process-killed-randomly)
+- [EMFILE errors](#emfile-errors)
+- [npm install fails silently](#npm-install-fails-silently)
+- [Grep/Glob/slash commands fail with ENOENT](#grepglobslash-commands-fail-with-enoent)
+- [Voice mode not functional](#voice-mode-not-functional)
+- [Hooks not firing (platform detection issue)](#hooks-not-firing-platform-detection-issue)
+- [/tmp data lost](#tmp-data-lost)
+- [Play Store Termux doesn't work](#play-store-termux-doesnt-work)
+- [Upstream Issues](#upstream-issues)
+
+---
+
 ### Claude Code hangs on startup
 
-**Problem:** You run `claude` and it hangs indefinitely — no prompt, no output, no error.
+**You see:** No output at all. The terminal sits there. No prompt, no error, no crash. `Ctrl+C` is your only way out.
 
-**Cause:** `TMPDIR` is not set. Claude Code and Node.js need a writable temporary directory. Termux does not set one by default, so npm's internal operations and Claude Code's IPC sockets have nowhere to go.
+```
+$ claude
+█
+```
+
+There is no error message. You will see a blinking cursor and nothing else, indefinitely.
 
 **Fix:**
 
@@ -25,13 +49,20 @@ echo 'export TMPDIR=$PREFIX/tmp' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+**Cause:** `TMPDIR` is not set. Claude Code and Node.js need a writable temporary directory. Termux does not set one by default, so npm's internal operations and Claude Code's IPC sockets have nowhere to go.
+
 ---
 
 ### Claude Code won't start, no error
 
-**Problem:** You run `claude` and nothing happens. No error message, no crash log. The command returns silently or the process exits immediately.
+**You see:** The command returns immediately to your shell prompt. No output, no error, no crash log.
 
-**Cause:** `/tmp` is not writable. Claude Code hardcodes `/tmp` for socket files, IPC, and ephemeral state. On Android, `/tmp` either doesn't exist or isn't writable from Termux's sandbox.
+```
+$ claude
+$
+```
+
+There is no error message. You will see the command exit silently and return to your prompt.
 
 **Fix:** Launch Claude Code through `proot` with a bind mount:
 
@@ -43,17 +74,54 @@ proot -b $PREFIX/tmp:/tmp claude
 Create an alias so you don't have to type it every time:
 
 ```bash
-echo "alias claude-proot='proot -b \$PREFIX/tmp:/tmp claude'" >> ~/.bashrc
+echo "alias claude-android='proot -b \$PREFIX/tmp:/tmp claude'" >> ~/.bashrc
 source ~/.bashrc
 ```
+
+**Cause:** `/tmp` is not writable. Claude Code hardcodes `/tmp` for socket files, IPC, and ephemeral state. On Android, `/tmp` either doesn't exist or isn't writable from Termux's sandbox.
+
+---
+
+### OAuth / authentication fails on first launch
+
+**You see:** The authentication flow fails, hangs, or the browser never opens. You may see:
+
+```
+Error: Failed to open browser
+```
+
+Or the auth URL prints to the terminal but nothing happens when you visit it, or the redirect back to `localhost` fails with a connection refused error.
+
+**Fix:**
+
+1. Install `termux-open-url` to enable browser integration:
+   ```bash
+   pkg install termux-tools -y
+   ```
+   Then retry `claude` — it should open your system browser for OAuth.
+
+2. If the browser opens but the redirect fails, copy the auth URL manually from the terminal into your browser.
+
+3. If all else fails, try authenticating with a direct API key:
+   ```bash
+   export ANTHROPIC_API_KEY="your-key-here"
+   ```
+
+**Cause:** Termux has no system browser integration by default. The OAuth redirect URL may not reach Termux because `localhost` inside Termux and `localhost` from the Android browser are not always the same network context.
 
 ---
 
 ### proot-distro doesn't work
 
-**Problem:** You installed a Linux distribution via `proot-distro` (Ubuntu, Debian, etc.) and Claude Code inside the guest produces no output, hangs, or behaves erratically.
+**You see:** Inside a `proot-distro` guest (Ubuntu, Debian, etc.), Claude Code produces no output, hangs, or behaves erratically. Commands may appear to run but return nothing.
 
-**Cause:** Android 16's kernel (6.12.x) breaks proot's stdout file descriptor binding inside guest distributions. This is a kernel-level restriction, not a configuration issue. There is no fix within the guest distro.
+```
+$ proot-distro login ubuntu
+root@localhost:~# npx claude
+█
+```
+
+There is no error message. You will see commands hang or produce empty output inside the guest distribution.
 
 **Fix:** Do not use `proot-distro` for Claude Code. Install and run everything natively in Termux:
 
@@ -66,13 +134,22 @@ proot -b $PREFIX/tmp:/tmp claude
 
 You only need `proot` for the single bind mount (`/tmp`), not a full guest OS.
 
+**Cause:** Android's kernel (6.12.x on Android 16, and similar restrictions on 14+) breaks proot's stdout file descriptor binding inside guest distributions. This is a kernel-level restriction, not a configuration issue. There is no fix within the guest distro.
+
 ---
 
 ### Node.js v24 hangs
 
-**Problem:** Claude Code hangs on startup with Node.js v24 installed. The process appears to start but never becomes interactive.
+**You see:** Claude Code hangs on startup with Node.js v24. The process appears to start but never becomes interactive.
 
-**Cause:** Node.js v24 has an event loop issue on ARM64 under Termux. The exact mechanism is unclear, but it affects how Node's event loop interacts with Android's process model.
+```
+$ node -v
+v24.x.x
+$ claude
+█
+```
+
+There is no error message. You will see the same hanging behavior as the TMPDIR issue, but `TMPDIR` is already set and proot is in use.
 
 **Fix:** Upgrade to Node.js v25 or later:
 
@@ -83,13 +160,19 @@ node -v  # should show v25.x.x or higher
 
 If `pkg upgrade` doesn't move you to v25, check that your Termux package repositories are current. The F-Droid version of Termux ships v25+ in its default repo.
 
+**Cause:** Node.js v24 has an event loop issue on ARM64 under Termux. The exact mechanism is unclear, but it affects how Node's event loop interacts with Android's process model.
+
 ---
 
 ### Process killed randomly
 
-**Problem:** Claude Code (or its subprocesses) dies unexpectedly mid-session. No error, no crash — the process just disappears.
+**You see:** Claude Code or its subprocesses die mid-session. No error, no crash — the process just disappears. Your terminal may show:
 
-**Cause:** Android's phantom process killer. Android limits background processes to approximately 32 across all apps. When Termux spawns multiple Node.js processes (Claude Code, subagents, language servers), the OS silently kills excess processes.
+```
+[Process completed (signal 9) - press Enter]
+```
+
+Or the Claude Code session simply vanishes and you're back at your shell prompt.
 
 **Fix:**
 
@@ -97,17 +180,27 @@ If `pkg upgrade` doesn't move you to v25, check that your Termux package reposit
 2. Limit concurrent subagents and child processes.
 3. Enable the developer option to disable the restriction:
 
-   **Settings → Developer Options → Disable child process restrictions** (toggle on)
+   **Settings -> Developer Options -> Disable child process restrictions** (toggle on)
 
-   If you don't see Developer Options, go to **Settings → About phone** and tap **Build number** seven times.
+   If you don't see Developer Options, go to **Settings -> About phone** and tap **Build number** seven times.
+
+**Cause:** Android's phantom process killer. Android limits background processes to approximately 32 across all apps. When Termux spawns multiple Node.js processes (Claude Code, subagents, language servers), the OS silently kills excess processes.
 
 ---
 
 ### EMFILE errors
 
-**Problem:** You see `EMFILE: too many open files` errors during operation.
+**You see:**
 
-**Cause:** The file descriptor limit under proot is approximately 1024. Heavy I/O, many open sockets, or spawning lots of processes can exhaust this limit.
+```
+Error: EMFILE: too many open files, open '/data/data/com.termux/files/home/...'
+```
+
+or
+
+```
+Error: EMFILE, too many open files
+```
 
 **Fix:**
 
@@ -118,13 +211,22 @@ If `pkg upgrade` doesn't move you to v25, check that your Termux package reposit
 
 There is no way to raise the FD limit under proot on Android without root access.
 
+**Cause:** The file descriptor limit under proot is approximately 1024. Heavy I/O, many open sockets, or spawning lots of processes can exhaust this limit.
+
 ---
 
 ### npm install fails silently
 
-**Problem:** `npm install -g @anthropic-ai/claude-code` appears to complete but Claude Code isn't installed, or the install produces no output and no binary.
+**You see:** `npm install -g @anthropic-ai/claude-code` appears to complete but Claude Code isn't installed. Or the install produces no output and no binary:
 
-**Cause:** `TMPDIR` is not set. Without a writable temporary directory, npm cannot stage files or compile native addons. It fails silently rather than reporting an error.
+```
+$ npm install -g @anthropic-ai/claude-code
+$
+$ claude
+bash: claude: command not found
+```
+
+There is no error message. You will see npm exit without complaint, but the package is not actually installed.
 
 **Fix:**
 
@@ -135,23 +237,111 @@ npm install -g @anthropic-ai/claude-code
 
 Always set `TMPDIR` before any npm operation in Termux. Add it to `~/.bashrc` to make it permanent.
 
+**Cause:** `TMPDIR` is not set. Without a writable temporary directory, npm cannot stage files or compile native addons. It fails silently rather than reporting an error.
+
+---
+
+### Grep/Glob/slash commands fail with ENOENT
+
+**You see:**
+
+```
+spawn /data/data/com.termux/files/usr/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/arm64-android/rg ENOENT
+```
+
+Search tools (Grep, Glob) and slash commands that depend on them crash immediately. Claude Code may fall back to slower methods or simply fail the operation.
+
+**Fix:** Install system ripgrep and symlink it into Claude Code's vendor directory:
+
+```bash
+pkg install ripgrep -y
+VENDOR_DIR="$(dirname $(which claude))/../lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep"
+mkdir -p "$VENDOR_DIR/arm64-android"
+ln -sf "$(which rg)" "$VENDOR_DIR/arm64-android/rg"
+```
+
+**Important:** This symlink breaks on Claude Code updates. Re-run the `mkdir` and `ln` commands after every `npm update -g @anthropic-ai/claude-code`.
+
+**Cause:** Claude Code bundles platform-specific ripgrep binaries but does not include an `arm64-android` build. The binary path it expects simply doesn't exist.
+
+---
+
+### Voice mode not functional
+
+**You see:**
+
+```
+Voice mode requires SoX for audio recording. Install SoX manually:
+```
+
+The `/voice` command refuses to start.
+
+**Fix:**
+
+```bash
+pkg install sox termux-api -y
+```
+
+Then grant microphone permission to Termux when Android prompts you (or manually via **Settings -> Apps -> Termux -> Permissions -> Microphone**).
+
+**Note:** Voice mode functionality may still be limited on Android even after installing SoX and granting permissions. Audio routing on Android does not always cooperate with command-line tools.
+
+**Cause:** SoX is available in Termux (`pkg install sox`) but voice mode also needs microphone access, which requires the Termux:API addon app and Android microphone permissions granted to Termux.
+
+---
+
+### Hooks not firing (platform detection issue)
+
+**You see:** Hooks configured in `.claude/settings.json` never trigger. There is no error message. You will see hooks simply not executing — no output from your hook scripts, no side effects.
+
+SessionStart/SessionStop hooks may work, but PreToolUse/PostToolUse hooks do not fire at all.
+
+You can verify the platform detection issue:
+
+```
+$ node -e "console.log(process.platform)"
+android
+```
+
+If this prints `android` instead of `linux`, you are affected.
+
+**Fix:** There is no complete fix — this is an upstream bug. Partial workarounds:
+
+1. **proot approach** (may help): Running through `proot -b $PREFIX/tmp:/tmp claude` causes some system calls to report `linux` instead of `android`. Results vary by Claude Code version.
+
+2. **cli.js patching** (fragile): Locate Claude Code's main script and patch platform checks. This breaks on every update.
+
+3. **Track the upstream issue:** See [GitHub issue #16615](https://github.com/anthropics/claude-code/issues/16615) for the latest status.
+
+**Cause:** Node.js reports `process.platform === "android"` on Termux, but Claude Code only checks for `darwin`, `win32`, and `linux`. Some code paths reject the `android` platform entirely, silently skipping hook execution.
+
 ---
 
 ### /tmp data lost
 
-**Problem:** Files you wrote to `/tmp` are gone. In-progress work that relied on `/tmp` state is lost.
+**You see:** Files you wrote to `/tmp` are gone. In-progress work that relied on `/tmp` state is lost.
 
-**Cause:** The proot bind mount is not a real filesystem mount — it's syscall interception. If proot crashes or the session ends, the mapping disappears. `/tmp` under proot is ephemeral.
+There is no error message. You will see files simply missing from `/tmp` after a proot crash or session end.
 
 **Fix:** Never store important state in `/tmp`. Treat it as disposable. Write anything you need to keep into your project directory or another persistent path under `$HOME`.
+
+**Cause:** The proot bind mount is not a real filesystem mount — it's syscall interception. If proot crashes or the session ends, the mapping disappears. `/tmp` under proot is ephemeral.
 
 ---
 
 ### Play Store Termux doesn't work
 
-**Problem:** You installed Termux from the Google Play Store and packages fail to install, repositories are missing, or the app behaves unexpectedly.
+**You see:** Packages fail to install, repositories are missing, or the app behaves unexpectedly:
 
-**Cause:** The Play Store version of Termux has not been updated since 2020. It does not support current package repositories, and its bundled tools are too old to run Claude Code.
+```
+E: Unable to locate package nodejs
+```
+
+or
+
+```
+E: The repository 'https://termux.org/packages stable Release' does not have a Release file.
+```
 
 **Fix:** Uninstall the Play Store version and install Termux from one of these sources:
 
@@ -163,3 +353,18 @@ After installing, run:
 ```bash
 pkg update && pkg upgrade -y
 ```
+
+**Cause:** The Play Store version of Termux has not been updated since 2020. It does not support current package repositories, and its bundled tools are too old to run Claude Code.
+
+---
+
+## Upstream Issues
+
+Known issues filed against the Claude Code repository that affect Android/Termux users:
+
+| Issue | Description | Status | Workaround |
+|-------|-------------|--------|------------|
+| [#15637](https://github.com/anthropics/claude-code/issues/15637) | Hardcoded `/tmp/claude` paths | Open | proot bind mount |
+| [#16615](https://github.com/anthropics/claude-code/issues/16615) | Platform detection — `android` not recognized | Open (stale) | cli.js patching |
+| [#9435](https://github.com/anthropics/claude-code/issues/9435) | Missing arm64-android ripgrep binary | Closed | System ripgrep + symlink |
+| [PR #31701](https://github.com/anthropics/claude-code/pull/31701) | Fix: respect `$TMPDIR` instead of hardcoding `/tmp` | Open PR | — |
