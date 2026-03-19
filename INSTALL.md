@@ -214,10 +214,11 @@ Community-reported working configurations:
 
 | Device | Android Version | Kernel | Termux Source | Node.js | Status |
 |--------|----------------|--------|---------------|---------|--------|
-| Samsung Galaxy S26 Ultra | Android 16 | 6.12.30 | F-Droid | v25.8.1 | Verified |
-| Google Pixel 10 Pro | Android 16 | — | F-Droid | v25.8.1 | Verified |
+| Samsung Galaxy S26 Ultra | Android 16 | 6.12.30 | F-Droid | v25.8.1 | Path A + B verified |
+| Google Pixel 10 Pro | Android 16 | — | F-Droid | v25.8.1 | Path A + B verified |
+| Samsung Galaxy S23+ | Android 15 | — | F-Droid | v25.8.1 | Path B verified |
 
-Both Path A and Path B verified on both devices. Expected to work on Android 14+ with any aarch64 device. [Submit a device report](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) if you've tested on different hardware.
+Three devices verified across two Android versions (15 and 16), two manufacturers (Samsung and Google). Auth required manual URL copy-paste on all devices (expected for Path B). Expected to work on Android 14+ with any aarch64 device. [Submit a device report](https://github.com/ferrumclaudepilgrim/claude-code-android/issues/new?template=device_report.md) if you've tested on different hardware.
 
 ---
 

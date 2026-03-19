@@ -135,7 +135,7 @@ Verified working on:
 |--------|---------|--------|--------|-----------|---------------|
 | Samsung Galaxy S26 Ultra | 16 | Works | Works | Symlink fix | 2026-03-19 |
 | Google Pixel 10 Pro | 16 | Works | Works | Symlink fix | 2026-03-19 |
-| Samsung Galaxy S23+ | 15 | Testing | Testing | — | — |
+| Samsung Galaxy S23+ | 15 | Untested | Works | Not needed (Path B) | 2026-03-19 |
 | Samsung Galaxy S24/S25 | 15-16 | Untested | Untested | — | — |
 | Google Pixel 8/9 | 15-16 | Untested | Untested | — | — |
 | OnePlus 12/13 | 14-15 | Untested | Untested | — | — |
