@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0] — 2026-03-19
+
+### First Stable Release
+
+- One-command installer (`install.sh`) — installs packages, Claude Code, ripgrep fix, and shell alias in one pass
+- Terminal screenshot proving Claude Code runs natively on Samsung Galaxy S26 Ultra
+- GitHub release v1.0.0
+
 ## [0.4.0] — 2026-03-19
 
 ### Repo Quality Pass

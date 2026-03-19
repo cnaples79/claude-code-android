@@ -28,10 +28,16 @@
 
 ## Quick Start
 
-Four commands. Termux open. Go.
+One command. Termux open. Go.
 
 ```bash
-pkg install nodejs git proot -y
+curl -fsSL https://raw.githubusercontent.com/ferrumclaudepilgrim/claude-code-android/main/install.sh | bash
+```
+
+Or do it manually (4 commands):
+
+```bash
+pkg install nodejs git proot ripgrep -y
 export TMPDIR=$PREFIX/tmp
 npm install -g @anthropic-ai/claude-code
 proot -b $PREFIX/tmp:/tmp claude
