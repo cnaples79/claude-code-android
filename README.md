@@ -101,7 +101,7 @@ Running on a phone means real limits. Know them upfront:
 | No root | No `sudo`, no ports below 1024 | Use ports 1024+, skip anything that needs root |
 | No systemd | No services, no daemons the normal way | Use `crond` or shell scripts for persistence |
 | ~512MB Node.js heap | Large datasets must stream | Don't buffer — stream and process incrementally |
-| ~1024 file descriptors | Heavy I/O can hit EMFILE | Limit concurrent processes |
+| File descriptor limits | Heavy I/O can hit EMFILE on some devices | Limit concurrent processes |
 | Phantom process killer | Android kills excess background processes | Use `tmux`, limit to 2-3 background processes |
 | /tmp is volatile | proot crash = mount gone | Never store persistent state in /tmp |
 

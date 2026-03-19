@@ -218,12 +218,13 @@ Error: EMFILE, too many open files
 
 **Fix:**
 
+- Check your limit: `ulimit -n` (varies by device — measured 32,768 on Android 16 / kernel 6.12, may be lower on older devices)
 - Avoid spawning unnecessary background processes.
 - Close unused terminal sessions.
 - If running multiple tools simultaneously, reduce parallelism.
 - Restart Claude Code to release leaked file descriptors.
 
-There is no way to raise the FD limit under proot on Android without root access.
+**Cause:** EMFILE means the process ran out of file descriptors. The limit varies by device and Android version. If you hit this, reduce concurrent operations or check if leaked FDs are the real issue (`ls /proc/$$/fd | wc -l`).
 
 **Cause:** The file descriptor limit under proot is approximately 1024. Heavy I/O, many open sockets, or spawning lots of processes can exhaust this limit.
 

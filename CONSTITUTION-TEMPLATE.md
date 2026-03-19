@@ -39,7 +39,7 @@ These produce silent failures, not errors. Every decision must account for them.
 7. **Termux paths are non-standard.** Home is `/data/data/com.termux/files/home`, prefix is `/data/data/com.termux/files/usr`. Upstream defaults and Stack Overflow paths will be wrong. Verify before using.
 8. **Storage is finite.** This is a phone. Generate no unnecessary artifacts, dependencies, or files.
 9. **Phantom process killer is active.** Android limits background processes to ~32 across all apps. Limit concurrent subagents to 2. If a session dies unexpectedly, this is the likely cause. Workaround: enable "Disable child process restrictions" in Developer Options.
-10. **File descriptor limit is ~1024 under proot.** Heavy I/O or many sockets can trigger EMFILE errors. Avoid spawning unnecessary processes.
+10. **File descriptor limits vary by device.** Heavy I/O or many sockets can trigger EMFILE errors. Check your limit with `ulimit -n`. Avoid spawning unnecessary processes.
 11. **If proot crashes, `/tmp` vanishes.** Any in-progress writes to `/tmp` are lost. Treat `/tmp` as ephemeral — never store state there that isn't also on disk in the repo.
 
 ---
