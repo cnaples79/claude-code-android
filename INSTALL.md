@@ -186,8 +186,9 @@ Community-reported working configurations:
 | Device | Android Version | Kernel | Termux Source | Node.js | Status |
 |--------|----------------|--------|---------------|---------|--------|
 | Samsung Galaxy S26 Ultra | Android 16 | 6.12.30 | F-Droid | v25.8.1 | Verified |
+| Google Pixel 10 Pro | Android 16 | — | F-Droid | v25.8.1 | Verified |
 
-Both Path A (native Termux) and Path B (proot-distro Ubuntu) verified on this device. Expected to work on Android 14+ with any aarch64 device. [Submit a device report](../../issues/new?template=device_report.md) if you've tested on different hardware.
+Both Path A and Path B verified on both devices. Expected to work on Android 14+ with any aarch64 device. [Submit a device report](../../issues/new?template=device_report.md) if you've tested on different hardware.
 
 ---
 
@@ -228,34 +229,90 @@ Remove the alias from `~/.bashrc` if you added one. Remove `~/.claude/` to clear
 
 ## Path B: proot-distro Ubuntu
 
-An alternative approach: install a full Ubuntu guest inside Termux, then install Claude Code inside it. This avoids the `/tmp` bind mount and ripgrep symlink entirely, at the cost of more disk space and setup time.
+A full Ubuntu Linux environment inside Termux. No `/tmp` workaround. No ripgrep fix. No npm. Claude Code thinks it's on a normal Linux computer.
 
 ### When to use Path B
 
 - You want a full Linux environment (apt, standard paths, /tmp works natively)
 - You plan to run other Linux tools alongside Claude Code
 - You prefer the native installer over npm
+- You want fewer things that break on updates
 
-### Setup
+### Setup — Every Step, Verified
+
+Tested on Pixel 10 Pro and Samsung Galaxy S26 Ultra, both Android 16. Every command is the exact sequence that works.
+
+**Step 1 — Update Termux:**
 
 ```bash
-# In Termux (not inside Claude Code)
+pkg upgrade -y
+```
+
+Termux selects a mirror automatically. This updates all base packages including openssl and curl. **This step is required** — without updated SSL libraries, the Claude Code installer returns 403.
+
+> You may be asked about config files (like OpenSSL). On a fresh install, choose "install the package maintainer's version."
+
+**Step 2 — Install proot-distro:**
+
+```bash
 pkg install proot-distro -y
+```
+
+**Step 3 — Install Ubuntu:**
+
+```bash
 proot-distro install ubuntu
+```
+
+Downloads Ubuntu 25.10 (Questing Quokka), approximately 55MB.
+
+**Step 4 — Enter Ubuntu:**
+
+```bash
 proot-distro login ubuntu
 ```
 
-Inside the Ubuntu guest:
+Your prompt changes to `root@localhost`. You are now inside a full Ubuntu Linux environment.
+
+> The warning `can't sanitize binding "/proc/self/fd/1"` appears during login. It is harmless — stdout works correctly.
+
+**Step 5 — Update Ubuntu packages:**
 
 ```bash
-# Install Claude Code via the native installer
-curl -fsSL https://claude.ai/install.sh | bash
+apt update && apt upgrade -y
+```
 
-# Launch Claude Code
+**This step is required.** Fresh Ubuntu packages are not up to date. Without this, the Claude Code native installer returns 403 because the SSL/curl libraries cannot reach Anthropic's CDN.
+
+**Step 6 — Install Claude Code:**
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Native installer. No Node.js required. Installs to `~/.local/bin/claude`.
+
+**Step 7 — Add to PATH:**
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+```
+
+**Step 8 — Verify:**
+
+```bash
+claude --version
+```
+
+Should show the installed version (e.g., `2.1.79 (Claude Code)`).
+
+**Step 9 — Launch:**
+
+```bash
 claude
 ```
 
-That's it. No `/tmp` workaround needed — Ubuntu has a native `/tmp`. No ripgrep symlink needed — the Termux system ripgrep is accessible via PATH.
+On first launch, authentication requires manual URL copy/paste. No browser auto-opens inside proot-distro. Copy the URL from the terminal, open it in your Android browser, authenticate, then return to the terminal.
 
 ### Path B trade-offs
 
@@ -264,18 +321,18 @@ That's it. No `/tmp` workaround needed — Ubuntu has a native `/tmp`. No ripgre
 | Setup time | ~2 minutes | ~10-15 minutes |
 | Disk usage | Minimal | ~500MB+ for Ubuntu rootfs |
 | /tmp workaround | Required (proot bind mount) | Not needed |
-| ripgrep fix | Required (symlink) | Not needed |
+| ripgrep fix | Required (symlink, breaks on update) | Not needed |
 | Install method | npm | Native installer (curl) |
+| Node.js required | Yes (v25+) | No |
 | Auth flow | Browser auto-opens | Manual URL copy/paste |
-| Overhead | Minimal | Full guest OS layer |
-| Best for | Quick setup, light usage | Full Linux environment |
+| Ongoing maintenance | Re-fix ripgrep after every update | Just update normally |
+| Best for | Quick setup, light usage | Full Linux environment, fewer workarounds |
 
 ### Path B notes
 
-- **Authentication:** The browser will not auto-open from inside the guest. Copy the auth URL from the terminal and paste it into your phone's browser manually.
-- **The warning `can't sanitize binding "/proc/self/fd/1"`** appears during login. It is harmless — stdout works correctly.
 - **Samsung One UI 8 users:** There is a known performance regression when Termux is backgrounded (proot-distro issue [#567](https://github.com/termux/proot-distro/issues/567)). Keep Termux in the foreground or split-screen for best performance.
 - **You cannot run proot-distro from inside Claude Code** if Claude Code was launched with `proot -b`. proot-distro detects nesting and refuses. Run proot-distro commands from a separate Termux session.
+- **To re-enter Ubuntu after closing Termux:** just run `proot-distro login ubuntu` again. Your Ubuntu environment persists between sessions.
 
 ### Verified Path B configuration
 

@@ -112,6 +112,7 @@ Verified working on:
 | Device | Android | Kernel | Path | Node.js | Status |
 |--------|---------|--------|------|---------|--------|
 | Samsung Galaxy S26 Ultra | 16 | 6.12.30 | A + B | v25.8.1 | Verified |
+| Google Pixel 10 Pro | 16 | — | A + B | v25.8.1 | Verified |
 | Samsung Galaxy S24/S25 | 15-16 | — | — | — | Untested |
 | Google Pixel 8/9 | 15-16 | — | — | — | Untested |
 | OnePlus 12/13 | 14-15 | — | — | — | Untested |
