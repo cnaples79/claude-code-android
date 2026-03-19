@@ -28,13 +28,7 @@
 
 ## Quick Start
 
-One command. Termux open. Go.
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/ferrumclaudepilgrim/claude-code-android/main/install.sh | bash
-```
-
-Or do it manually (4 commands):
+Four commands. Termux open. Go.
 
 ```bash
 pkg install nodejs git proot ripgrep -y
@@ -44,6 +38,8 @@ proot -b $PREFIX/tmp:/tmp claude
 ```
 
 That's it. Claude Code is running on your phone.
+
+> **Scripted install:** If you're on a desktop terminal or can copy-paste from a browser, there's also a [one-command installer](install.sh) (`curl | bash`). But the four commands above are designed to be typed on a phone keyboard — no long URLs required.
 
 > **Note:** The Quick Start commands work for this session. Add TMPDIR to your .bashrc (shown below) to make it permanent.
 
