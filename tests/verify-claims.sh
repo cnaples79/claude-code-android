@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # verify-claims.sh — Tests every technical claim in the claude-code-android docs
 # Safe to run on a live device. Non-destructive. Restores all state.
 #
