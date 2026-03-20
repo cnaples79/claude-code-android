@@ -234,7 +234,7 @@ cd ~
 git clone https://github.com/ferrumclaudepilgrim/claude-code-android.git
 mkdir -p ~/.claude/skills
 cp -r claude-code-android/.claude/skills/* ~/.claude/skills/
-ls ~/.claude/skills/                      # Verify: should show doctor, fix-ripgrep, termux-safe
+ls ~/.claude/skills/                      # Should show 8 skill directories including doctor, fix-ripgrep, termux-safe
 rm -rf claude-code-android                # Clean up — phone storage is finite
 ```
 

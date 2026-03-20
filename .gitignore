@@ -7,8 +7,7 @@ Thumbs.db
 *~
 
 # Environment and secrets
-.env
-.env.*
+.env*
 *.pem
 *.key
 *.p12
