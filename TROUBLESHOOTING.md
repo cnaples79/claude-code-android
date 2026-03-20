@@ -9,6 +9,7 @@ If you haven't installed yet, see [INSTALL.md](INSTALL.md) first.
 ## Table of Contents
 
 - [Claude Code hangs on startup](#claude-code-hangs-on-startup)
+- [Unsupported architecture: armhf](#unsupported-architecture-armhf)
 - [Claude Code won't start, no error](#claude-code-wont-start-no-error)
 - [OAuth / authentication fails on first launch](#oauth--authentication-fails-on-first-launch)
 - [proot-distro issues](#proot-distro-issues)
@@ -50,6 +51,30 @@ source ~/.bashrc
 ```
 
 **Cause:** `TMPDIR` is not set. Claude Code and Node.js need a writable temporary directory. Termux does not set one by default, so npm's internal operations and Claude Code's IPC sockets have nowhere to go.
+
+---
+
+### Unsupported architecture: armhf
+
+**You see:**
+
+```
+Unsupported architecture: armhf. Only amd64, arm64 are supported.
+```
+
+**Fix:** None. Claude Code requires a 64-bit (arm64/aarch64) operating system. Your device is running a 32-bit OS.
+
+Check your architecture:
+
+```bash
+uname -m
+```
+
+If the output is `armv7l` or `armv8l`, your device cannot run Claude Code. This is a hard requirement with no workaround.
+
+**Why this happens:** Some budget Android phones (Samsung Galaxy A13 5G, A02S, M13 5G, and others) ship with a 32-bit Android OS on 64-bit hardware. The phone's marketing materials may say "64-bit processor" but the OS runs in 32-bit mode. Claude Code checks `process.arch` at startup and rejects anything other than `arm64` or `x64`.
+
+**Affected devices include:** Samsung Galaxy A13, A02S, M13 5G, A10, A6, and similar budget models from 2018-2023. Any phone where `uname -m` returns `armv7l` is affected regardless of the CPU's theoretical capability.
 
 ---
 

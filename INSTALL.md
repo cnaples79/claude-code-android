@@ -10,6 +10,7 @@ Before you begin, confirm you have the following:
 
 | Component | Requirement |
 |-----------|-------------|
+| **Architecture** | aarch64 (64-bit ARM) — run `uname -m` to verify. If it returns `armv7l` or `armv8l`, Claude Code will not work on your device |
 | **Device** | aarch64 Android device (ARM64) |
 | **OS** | Android 14+ |
 | **Kernel** | Varies by Android version — use `uname -r` to check (Android 14/15 use 5.10–6.6, Android 16 uses 6.12) |
@@ -104,9 +105,11 @@ This installs Claude Code globally via npm. With `TMPDIR` set correctly, npm can
 
 > **Note:** Anthropic now offers a native installer (`curl -fsSL https://claude.ai/install.sh | bash`) as the preferred installation method. The native installer does not work in native Termux due to SSL library compatibility issues — use npm for Path A. The native installer works correctly in Path B (proot-distro Ubuntu) where the library stack is standard Linux.
 
+> **Do not run `claude` directly.** The npm install puts the binary on your PATH, but Claude Code will fail silently without the proot wrapper. Step 4 is required.
+
 ---
 
-## Step 4: Launch with proot
+## Step 4: Launch Claude Code (Required)
 
 Claude Code hardcodes `/tmp` for runtime state. The fix is `proot` — a userspace path remapper that requires no root privileges. It intercepts system calls and makes `/tmp` point to Termux's writable tmp directory.
 
@@ -128,7 +131,7 @@ On first launch, Claude Code will prompt you to authenticate. A URL will appear 
 
 ## Step 5: Create the Alias
 
-Add this to your `~/.bashrc` so you never have to remember the proot invocation:
+Add this alias to your `~/.bashrc`. Use `claude-android` every time — running bare `claude` without the proot wrapper will fail silently:
 
 ```bash
 echo "alias claude-android='proot -b \$PREFIX/tmp:/tmp claude'" >> ~/.bashrc

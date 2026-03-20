@@ -36,6 +36,8 @@
 
 You need **Termux** installed from **F-Droid** (not the Play Store — the Play Store version is outdated and won't work).
 
+> **First, check your architecture.** Open any terminal or download Termux, then run `uname -m`. If the result is `aarch64`, you're good. If it shows `armv7l` or `armv8l`, your device runs a 32-bit OS and Claude Code will not work — no workaround exists. Some budget Samsung phones (Galaxy A13, A02S, M13) ship 32-bit Android on 64-bit hardware.
+
 1. Download F-Droid from [f-droid.org](https://f-droid.org/en/)
 2. Open the downloaded APK — Android will block it. Go to Settings → allow "install unknown apps" from your browser
 3. **Security note:** After installing F-Droid, go back to Settings and disable "install unknown apps" from your browser. Keep it enabled only for F-Droid itself (F-Droid needs it to install apps)
@@ -81,6 +83,7 @@ Faster setup (~2 min), less disk space, but requires workarounds that break on e
 pkg install nodejs git curl proot ripgrep -y
 export TMPDIR=$PREFIX/tmp   # Critical: npm fails silently without this
 npm install -g @anthropic-ai/claude-code
+# Required: bare 'claude' will fail — always use this wrapper
 proot -b $PREFIX/tmp:/tmp claude
 ```
 
