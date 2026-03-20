@@ -90,7 +90,7 @@ This avoids proot entirely but only redirects Claude's own temp files — other 
 
 **Cause:** `/tmp` is not writable. Claude Code hardcodes `/tmp` for socket files, IPC, and ephemeral state. On Android, `/tmp` either doesn't exist or isn't writable from Termux's sandbox.
 
-> **Note:** The proot bind mount resolves basic Claude Code operation. However, subagent task directories (`/tmp/claude/{hash}/tasks/`) may still fail with EACCES on some configurations. If you use Claude Code's subagent features and hit permission errors, use Path B (proot-distro Ubuntu) where `/tmp` is fully native.
+> **Note:** The proot bind mount resolves Claude Code operation including subagent task directories. Verified working with subagents on Android 16 (proot 5.1.107-70). Reports of EACCES on subagent tasks in issue [#15637](https://github.com/anthropics/claude-code/issues/15637) describe the experience *without* proot — the bind mount fixes it.
 
 ---
 
@@ -404,7 +404,7 @@ Android 16 includes a built-in Linux terminal via the Android Virtualization Fra
 
 **Current limitations that prevent recommendation:**
 
-- **4GB RAM cap** regardless of device RAM — OOM kills during moderate workloads
+- **~4GB default RAM allocation** regardless of device RAM — OOM kills during moderate workloads (may be a crosvm default rather than a hard architectural cap, but no documented way to change it)
 - **Network goes through NAT** via Android's Tethering Manager — SSH and API calls can fail unpredictably
 - **Crashes lose data** — the Terminal app marks any unclean shutdown as "VM damaged" and requires full reinstall
 - **Snapdragon devices not supported** — Qualcomm only supports "protected" VMs, not the mode the Terminal app requires
