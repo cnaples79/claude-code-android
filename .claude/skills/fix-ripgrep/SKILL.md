@@ -4,7 +4,7 @@ description: Fix Claude Code's broken Grep/Glob tools on Android by installing s
 user-invocable: true
 disable-model-invocation: true
 argument-hint: (no arguments needed)
-allowed-tools: Bash, Read
+allowed-tools: Bash, Read, Grep
 ---
 
 # Fix Ripgrep on Android/Termux

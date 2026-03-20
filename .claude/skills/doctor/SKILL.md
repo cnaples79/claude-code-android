@@ -57,7 +57,7 @@ PASS if arm64-android/rg exists. FAIL if missing. Suggest: run `/fix-ripgrep`.
 
 **8. Termux source:**
 ```bash
-apt policy termux-tools 2>/dev/null | head -3 || echo "UNKNOWN"
+pkg show termux-tools 2>/dev/null | head -5 || echo "UNKNOWN"
 ```
 WARN if Play Store version detected (outdated, will fail).
 

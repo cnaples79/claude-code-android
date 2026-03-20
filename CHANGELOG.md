@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.2.0] — 2026-03-20
+
+### Features
+
+- **Path B promoted to recommended Quick Start.** README rewritten to lead with proot-distro Ubuntu — no /tmp workaround needed, native installer, cleaner environment. Path A (native Termux) presented as the lightweight alternative with a comparison table showing tradeoffs.
+- **All three device screenshots in README.** S26 Ultra, Pixel 10 Pro, and S23+ screenshots displayed with captions identifying each device.
+- **Images moved to `assets/` directory.** Consistent naming: `assets/screenshot-s26ultra.jpg`, `assets/screenshot-pixel10pro.jpg`, `assets/screenshot-s23plus.jpg`, `assets/logo.jpg`.
+- **Remote Control section added.** Documents Anthropic's official mobile interface (launched Feb 2026) as an alternative to running Claude Code locally, with guidance on when to use each approach.
+- **AVF "Paths We're Watching" section.** TROUBLESHOOTING.md now documents Android Virtualization Framework limitations (RAM allocation, NAT networking, crash data loss, Snapdragon not supported) with a contribution hook for experimenters.
+- **Per-device test results structure.** `tests/results/<device>.txt` replaces the single `verification-results.txt`. `verify-claims.sh` auto-generates device-specific filenames from `getprop ro.product.model` and `ro.build.version.release`.
+- **CONSTITUTION-TEMPLATE routing decision tree.** Seven-step decision tree added to help users determine which agent or tool handles a given task.
+- **armhf/32-bit architecture documentation.** Budget Samsung phones (A13 and similar) ship 32-bit Android on 64-bit hardware. Claude Code requires arm64. Added architecture check to Prerequisites and a new TROUBLESHOOTING entry with affected device list and `uname -m` diagnostic.
+
+### Bug Fixes
+
+- **TMPDIR persistence fix in Path A Step 2.** `export TMPDIR=$PREFIX/tmp` now written to `.bashrc` inline during install, not left as a manual step.
+- **Subagent EACCES note corrected.** Previous note said proot "may not fix" subagent task directory failures. Verified on device: the proot bind mount resolves EACCES for subagent task directories completely. Documentation corrected.
+- **Skills link corrected.** CONTRIBUTING.md linked to `agentskills.io` (the base spec); corrected to `docs.anthropic.com` (Claude Code's own skills documentation).
+- **`termux-safe` scope note added.** Skill header now states this skill applies to native Termux only, not proot-distro Ubuntu sessions.
+- **Path A launch warning added.** After `npm install -g @anthropic-ai/claude-code`, users who type bare `claude` get a silent failure. Step 4 now marked Required and includes an explicit warning to use the proot launch command, not bare `claude`.
+- **`install.sh` shebang fixed.** Changed from hardcoded Termux path to `#!/usr/bin/env bash` for correct behavior when inspected on non-Termux systems.
+- **Orphaned Pixel screenshot deleted.** `Pixel-10-Pro-Quick-Install.png` was never referenced in any document and has been removed.
+- **AVF RAM claim hedged.** Changed from "hard 4GB cap" to "~4GB default allocation" — no hard architectural limit found in AOSP docs; this appears to be a crosvm default, not a ceiling.
+
+### Community Feedback
+
+- **Issue templates updated.** Bug report template now includes install path (A or B), TMPDIR value, and CLAUDE_CODE_TMPDIR value as diagnostic fields. Device report template asks which path(s) were tested.
+- Both armhf/32-bit and Path A launch issues were reported by real users within the first hour of going live and addressed same day.
+
 ## [1.1.0] — 2026-03-19
 
 ### Major UX Overhaul

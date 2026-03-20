@@ -36,7 +36,7 @@
 
 You need **Termux** installed from **F-Droid** (not the Play Store — the Play Store version is outdated and won't work).
 
-> **First, check your architecture.** Open any terminal or download Termux, then run `uname -m`. If the result is `aarch64`, you're good. If it shows `armv7l` or `armv8l`, your device runs a 32-bit OS and Claude Code will not work — no workaround exists. Some budget Samsung phones (Galaxy A13, A02S, M13) ship 32-bit Android on 64-bit hardware.
+> **First, check your architecture.** Open any terminal or download Termux, then run `uname -m`. If the result is `aarch64`, you're good. If it shows `armv7l` or `armv8l`, your device runs a 32-bit OS and Claude Code will not work — no workaround exists. Some budget Samsung phones (Galaxy A13, A02S, M13) ship 32-bit Android on 64-bit hardware. See [Troubleshooting](TROUBLESHOOTING.md#unsupported-architecture-armhf) for details.
 
 1. Download F-Droid from [f-droid.org](https://f-droid.org/en/)
 2. Open the downloaded APK — Android will block it. Go to Settings → allow "install unknown apps" from your browser
@@ -141,7 +141,7 @@ Claude Code bundles ripgrep for Grep/Glob tools but has no `arm64-android` build
 
 ---
 
-### Alternative: Anthropic Remote Control
+## Alternative: Anthropic Remote Control
 
 If you have a desktop or laptop running Claude Code, [Remote Control](https://docs.anthropic.com/en/docs/claude-code/remote-control) lets you control it from your phone via QR code. No Termux needed.
 

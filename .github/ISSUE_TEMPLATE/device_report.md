@@ -10,6 +10,7 @@ assignees: ''
 
 - **Device model:** (e.g., Pixel 9, Galaxy S25 Ultra)
 - **Android version:** (e.g., Android 15, Android 16)
+- **Architecture:** (`uname -m` output)
 - **Kernel version:** (output of `uname -r`)
 - **Termux version/source:** (e.g., F-Droid v0.119, GitHub release)
 - **Which path(s) tested:** (A — native Termux with proot bind mount, B — proot-distro Ubuntu, or both)
