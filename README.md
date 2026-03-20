@@ -158,7 +158,7 @@ If you have a desktop or laptop running Claude Code, [Remote Control](https://do
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common failures with symptoms, causes, and fixes |
 | **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | CLAUDE.md template for persistent rules on Android |
 | **[install.sh](install.sh)** | One-command installer for Path A |
-| **[.claude/skills/](.claude/skills/)** | Android-specific Claude Code skills (/doctor, /fix-ripgrep, termux-safe) |
+| **[.claude/skills/](.claude/skills/)** | 8 Claude Code skills — Android diagnostics + general workflow tools |
 | **[tests/](tests/)** | Verification suite — test documentation claims against your device |
 | **[CHANGELOG.md](CHANGELOG.md)** | Version history |
 | **[CONTRIBUTING.md](CONTRIBUTING.md)** | How to contribute, report bugs, submit device reports |
@@ -203,15 +203,27 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
 
 ---
 
-## Skills for Android
+## Skills
 
-This repo includes [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) built specifically for Android/Termux environments.
+This repo includes [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) — both Android-specific and general-purpose workflow tools.
+
+### Android / Termux
 
 | Skill | What It Does | How to Use |
 |-------|-------------|-----------|
 | `/doctor` | Diagnose your full Termux+Claude Code setup in one pass | Type `/doctor` in Claude Code |
 | `/fix-ripgrep` | Fix broken Grep/Glob tools (missing arm64-android binary) | Type `/fix-ripgrep` in Claude Code |
 | `termux-safe` | Auto-loaded constraints — prevents `sudo`, wrong paths, silent failures | Loads automatically |
+
+### Workflow (works anywhere)
+
+| Skill | What It Does | How to Use |
+|-------|-------------|-----------|
+| `/audience-first` | Define your audience before publishing — who searches for this, what terms, what do they need? | Before creating docs, READMEs, or public features |
+| `/scope-framing` | Frame research before starting — what decision does this serve? What's out of scope? | Before any research task |
+| `/config-validator` | Audit .claude/ directory for consistency — agents, skills, hooks, settings | During repo audits or after config changes |
+| `/minimum-viable` | Justify your tool choice — can a shell script do this, or do you need the heavier approach? | Before building anything |
+| `/search-optimized-writing` | Write docs that are findable — exact error messages, searchable headings, answer-first structure | When writing troubleshooting or guides |
 
 ### Installation
 
