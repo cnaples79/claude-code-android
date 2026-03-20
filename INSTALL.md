@@ -83,7 +83,10 @@ This installs Node.js v25+, git, curl, proot, and ripgrep. All five are required
 
 ```bash
 export TMPDIR=$PREFIX/tmp
+echo 'export TMPDIR=$PREFIX/tmp' >> ~/.bashrc   # Make it permanent
 ```
+
+The `export` only lasts this session. The `echo` line makes it permanent across reboots.
 
 **This is critical.** Termux does not set `TMPDIR` by default. Without it, npm has no writable temporary directory. The install will either fail silently, produce a corrupted installation, or appear to succeed while leaving Claude Code unable to start. This single missing environment variable is the most common point of failure in Termux Node.js setups.
 

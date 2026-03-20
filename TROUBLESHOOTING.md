@@ -90,6 +90,8 @@ This avoids proot entirely but only redirects Claude's own temp files — other 
 
 **Cause:** `/tmp` is not writable. Claude Code hardcodes `/tmp` for socket files, IPC, and ephemeral state. On Android, `/tmp` either doesn't exist or isn't writable from Termux's sandbox.
 
+> **Note:** The proot bind mount resolves basic Claude Code operation. However, subagent task directories (`/tmp/claude/{hash}/tasks/`) may still fail with EACCES on some configurations. If you use Claude Code's subagent features and hit permission errors, use Path B (proot-distro Ubuntu) where `/tmp` is fully native.
+
 ---
 
 ### OAuth / authentication fails on first launch

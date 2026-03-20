@@ -138,6 +138,15 @@ Claude Code bundles ripgrep for Grep/Glob tools but has no `arm64-android` build
 
 ---
 
+### Alternative: Anthropic Remote Control
+
+If you have a desktop or laptop running Claude Code, [Remote Control](https://docs.anthropic.com/en/docs/claude-code/remote-control) lets you control it from your phone via QR code. No Termux needed.
+
+**When to use Remote Control:** You have a desktop nearby and want quick mobile access.
+**When to use this repo's approach:** You want Claude Code running locally on your phone with no desktop dependency.
+
+---
+
 ## What's In This Repo
 
 | File | What It Is |

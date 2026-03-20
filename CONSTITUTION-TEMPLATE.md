@@ -78,6 +78,16 @@ Subagents are scoped execution contexts, not personas. They are defined in `.cla
 
 **No chaining.** Subagents do not invoke other subagents. Multi-domain work is coordinated from the top.
 
+**Routing decision tree:** When deciding whether to delegate or act directly, follow this sequence:
+
+1. **Is the work read-only?** → Use your read-only research subagent (or act directly with Tier 1 tools).
+2. **Does the work require writing documentation or prose?** → Delegate to your writing/documentation subagent.
+3. **Does the work require writing or debugging code?** → Delegate to your code subagent.
+4. **Does the work require repo hygiene, config, or `.claude/` changes?** → Delegate to your maintenance subagent.
+5. **Does the work require planning or design without execution?** → Delegate to your planning subagent (read-only — it proposes, never executes).
+6. **Does the work span multiple domains?** → Break it into domain-specific tasks, coordinate from the top, delegate each task to the appropriate subagent. Do not chain subagents together.
+7. **Is the operator naming a specific subagent?** → Route to that subagent. Do not bypass to act directly.
+
 ---
 
 ## 5. Documentation Standard
