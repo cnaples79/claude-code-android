@@ -23,6 +23,7 @@ If you haven't installed yet, see [INSTALL.md](INSTALL.md) first.
 - [/tmp data lost](#tmp-data-lost)
 - [Play Store Termux doesn't work](#play-store-termux-doesnt-work)
 - [Upstream Issues](#upstream-issues)
+- [ADB Wireless Debugging](#adb-wireless-debugging)
 
 ---
 
@@ -200,7 +201,13 @@ $ claude
 
 There is no error message. You will see the same hanging behavior as the TMPDIR issue, but `TMPDIR` is already set and proot is in use.
 
-**Fix:** Upgrade to Node.js v25 or later:
+**Fix:** This is likely related to TMPDIR write permissions rather than a fundamental v24 incompatibility.
+
+1. Try setting `export CLAUDE_CODE_TMPDIR=$HOME/tmp` in your `~/.bashrc` before
+   launching (create the directory first: `mkdir -p ~/tmp`).
+2. Or use Path B (proot-distro Ubuntu), where this constraint does not apply.
+
+If neither resolves it, fall back to Node v25+:
 
 ```bash
 pkg upgrade nodejs -y
@@ -209,7 +216,7 @@ node -v  # should show v25.x.x or higher
 
 If `pkg upgrade` doesn't move you to v25, check that your Termux package repositories are current. The F-Droid version of Termux ships v25+ in its default repo.
 
-**Cause:** Node.js v24 has an event loop issue on ARM64 under Termux. The exact mechanism is unclear, but it affects how Node's event loop interacts with Android's process model.
+**Cause:** The hang is likely related to TMPDIR write permissions. Node.js v24+ inside proot-distro Ubuntu does not exhibit this behavior in testing.
 
 ---
 
@@ -418,6 +425,54 @@ Known issues filed against the Claude Code repository that affect Android/Termux
 | [#16615](https://github.com/anthropics/claude-code/issues/16615) | Platform detection — `android` not recognized | Open (stale) | cli.js patching |
 | [#9435](https://github.com/anthropics/claude-code/issues/9435) | Missing arm64-android ripgrep binary | Closed | System ripgrep + symlink |
 | [PR #31701](https://github.com/anthropics/claude-code/pull/31701) | Fix: respect `$TMPDIR` instead of hardcoding `/tmp` | Open PR | — |
+
+---
+
+## ADB Wireless Debugging
+
+### "error: protocol fault (couldn't read status message): Success" during pairing
+
+This is a known bug in ADB 35.x (Google Issue Tracker #329947334). The error message
+is misleading — it can appear even when the pairing partially or fully succeeds.
+
+**Workaround:**
+1. If you see this error, try running `adb connect 127.0.0.1:<connection-port>`
+   immediately after, using the port shown in the wireless debugging settings screen
+   (not the pairing port — the main connection port).
+2. If that fails, close and reopen the "Pair device with pairing code" dialog in
+   Developer Options to get a new code, then retry `adb pair`.
+3. The second pairing attempt typically succeeds. If it does not, restart the ADB
+   server (`adb kill-server && adb start-server`) and try once more.
+
+Once successfully connected, run `adb devices` to confirm — the device should appear
+as `127.0.0.1:<port> device`.
+
+---
+
+### Does the ADB connection survive screen lock or reboot?
+
+**Screen lock:** The `adb connect` session drops on screen lock. You must run
+`adb connect 127.0.0.1:<port>` again after unlocking.
+
+**App switching / Termux backgrounding:** The connection drops when you switch apps
+or background Termux. Reconnect with `adb connect` before issuing further ADB commands.
+
+**Device reboot:** The connection does not survive reboot. After reboot, you must
+run `adb connect 127.0.0.1:<port>` again. The connection port changes on each
+wireless debugging restart — it is assigned dynamically by Android. Check the
+current port in Developer Options → Wireless debugging → the port shown on the main
+wireless debugging screen (not the pairing dialog).
+
+**Re-pairing after reboot:** You typically do not need to re-pair (run `adb pair`)
+after a reboot if you have already paired once. The pairing is remembered. Only
+re-pairing is required if you revoke trusted devices or re-enable wireless debugging
+from scratch.
+
+**Automating reconnect:** You can add `adb connect 127.0.0.1:<port>` to your
+Termux startup script, but be aware the port changes on each wireless debugging
+restart. A more robust approach is to check the current port from Developer Options
+and reconnect manually when needed. Boot automation for dynamic ports is not yet
+solved cleanly — contributions welcome.
 
 ---
 

@@ -1,5 +1,64 @@
 # Changelog
 
+## [1.3.0] — 2026-03-21
+
+### Added
+
+- **ADB wireless self-connect** — Claude Code on Android can now use ADB wireless
+  debugging to connect to its own device via `adb pair/connect 127.0.0.1`. This
+  unlocks system capabilities that SELinux blocks from Termux directly: `screencap`,
+  `settings get/put` (including DND zen_mode), `content query` (calendar, contacts),
+  `pm list packages`, `dumpsys`, `input tap/swipe/text`, `am start/force-stop`,
+  `ps -A`, and `getprop`. No root required. No third-party automation app required.
+  See [ADB-WIRELESS.md](ADB-WIRELESS.md) for the full setup guide.
+
+- **Agent concurrency limit raised to 6** — Stress testing with 6 simultaneous
+  Claude Opus agents on mid-range Android hardware (8-core Snapdragon, 11 GB RAM)
+  produced negligible load: +0.02 load average, -172 MB RAM (down, not up), +4.7°C
+  temperature rise. The practical ceiling is API rate limits, not device hardware.
+  Users running Claude Code agents can safely run up to 6 concurrently without thermal
+  or memory concern on comparable devices. Adjust based on your hardware.
+
+- **`CLAUDE_CODE_TMPDIR` environment variable** — An alternative to the proot bind
+  mount workaround for TMPDIR. Setting `export CLAUDE_CODE_TMPDIR=/data/data/com.termux/files/home/tmp`
+  (or any writable path) in your shell profile before launching Claude Code resolves
+  the write-permission error without requiring proot. Documented in INSTALL.md Path A.
+
+- **Security model documented** — Wireless debugging enabled as a permanent state
+  introduces a security surface: any device on the same WiFi network can attempt ADB
+  pairing. Mitigations documented: pairing code required for all new connections,
+  connection is localhost-only from the Termux side, and wireless debugging can be
+  toggled off when not in use. See ADB-WIRELESS.md §Security.
+
+### Changed
+
+- **Path B (proot-distro Ubuntu) is now the recommended path.** The primary Quick
+  Start in INSTALL.md now leads with Path B. Path A (native Termux) remains fully
+  documented as an alternative for users who prefer minimal setup or cannot run
+  proot-distro.
+
+- **`process.platform` behavior clarified** — Inside proot-distro Ubuntu, Claude Code
+  sees `process.platform === "linux"`. In native Termux, it sees `"android"`. Many npm
+  packages and tools branch on this value. Users experiencing tool failures in native
+  Termux may find them resolved inside the Ubuntu guest. This is now documented
+  explicitly in INSTALL.md.
+
+- **Node v24 language softened** — The v24 hang is documented as "may hang on launch,
+  likely related to TMPDIR write permissions" rather than a hard incompatibility. Users
+  who have resolved TMPDIR (via bind mount or `CLAUDE_CODE_TMPDIR`) may find v24 works.
+  The recommendation is still v20 LTS or the version Anthropic's installer provides.
+  Node v24+ inside proot-distro Ubuntu is not subject to the same TMPDIR constraint and
+  has not shown the hang behavior in testing.
+
+### Community
+
+- Thanks to u/Historical-Lie9697 for a detailed challenge to the proot behavior,
+  Node v24 hang, and ripgrep bundled binary claims. The challenge prompted the testing
+  that produced this release. All three claims were re-evaluated; the proot and ripgrep
+  findings were updated, and the Node v24 language was softened accordingly.
+
+---
+
 ## [1.2.0] — 2026-03-20
 
 ### Features

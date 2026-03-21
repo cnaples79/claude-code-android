@@ -47,7 +47,7 @@ This guide has two installation paths. Pick one before you start.
 Running Claude Code on Android means solving problems that don't exist on desktop Linux. The full explanation is in the [README](README.md#why-this-is-hard). The key points:
 
 1. **`/tmp` isn't writable** — Claude Code needs it, Android doesn't provide it. Path A fixes this with a proot bind mount. Path B avoids it entirely (Ubuntu has native `/tmp`).
-2. **Node.js v24 hangs on ARM64** — use v25+ (Termux ships this by default).
+2. **Node.js v24 may hang on ARM64** — use v25+ (Termux ships this by default). The hang is likely related to TMPDIR write permissions rather than a fundamental v24 incompatibility. If you encounter it, try setting `CLAUDE_CODE_TMPDIR` (see Step 4) or use Path B, where this constraint does not apply.
 3. **ripgrep binary missing for ARM64 Android** — Path A needs a symlink fix. Path B doesn't need it.
 
 ---
@@ -123,7 +123,15 @@ proot -b $PREFIX/tmp:/tmp claude
 
 This single invocation binds Termux's writable tmp directory to `/tmp`, allowing Claude Code to operate as if it were on a standard Linux system. No root. No containers. No virtualization. Just syscall interception.
 
-> **Alternative:** If you prefer not to use proot, you can set `export CLAUDE_CODE_TMPDIR=$PREFIX/tmp/claude && mkdir -p $PREFIX/tmp/claude && claude`. This redirects Claude's temp files without proot, but some tools that hardcode `/tmp` may still fail.
+> **Alternative to the bind mount:** If you prefer not to use proot for this workaround, you can set the `CLAUDE_CODE_TMPDIR` environment variable to any writable directory:
+>
+> ```bash
+> mkdir -p ~/tmp
+> echo 'export CLAUDE_CODE_TMPDIR=$HOME/tmp' >> ~/.bashrc
+> source ~/.bashrc
+> ```
+>
+> This tells Claude Code to use that directory for temporary files instead of the default `/tmp`. No proot required. Add this before the `claude` launch command in your startup alias. Note: this only redirects Claude's own temp files — other tools that hardcode `/tmp` may still fail. The proot approach above is more comprehensive.
 
 On first launch, Claude Code will prompt you to authenticate. A URL will appear in your terminal — open it in your phone's browser to complete OAuth. If authentication fails, see the [OAuth troubleshooting entry](TROUBLESHOOTING.md#oauth--authentication-fails-on-first-launch).
 
@@ -343,6 +351,13 @@ On first launch, authentication requires manual URL copy/paste. No browser auto-
 | Auth flow | Browser auto-opens | Manual URL copy/paste |
 | Ongoing maintenance | Re-fix ripgrep after every update | Just update normally |
 | Best for | Quick setup, light usage | Full Linux environment, fewer workarounds |
+
+**Why Path B often works when Path A doesn't:** Inside proot-distro Ubuntu, Claude
+Code reports `process.platform === "linux"`. In native Termux, it reports `"android"`.
+Many npm packages and Claude Code's own bundled tools (including ripgrep) branch on
+this value. Tool failures, unresolved binary paths, and unexpected behavior in native
+Termux may resolve cleanly inside the Ubuntu guest — not because the hardware changed,
+but because the runtime identity did.
 
 ### Path B notes
 

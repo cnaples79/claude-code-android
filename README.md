@@ -27,7 +27,7 @@
 </p>
 
 <p align="center">
-  <a href="INSTALL.md">Install Guide</a> · <a href="TROUBLESHOOTING.md">Troubleshooting</a> · <a href="CONSTITUTION-TEMPLATE.md">CLAUDE.md Template</a> · <a href="AGENTS.md">Meet the Crew</a> · <a href="STORY.md">Our Story</a>
+  <a href="INSTALL.md">Install Guide</a> · <a href="TROUBLESHOOTING.md">Troubleshooting</a> · <a href="ADB-WIRELESS.md">ADB Wireless</a> · <a href="CONSTITUTION-TEMPLATE.md">CLAUDE.md Template</a> · <a href="AGENTS.md">Meet the Crew</a> · <a href="STORY.md">Our Story</a>
 </p>
 
 ---
@@ -141,6 +141,19 @@ Claude Code bundles ripgrep for Grep/Glob tools but has no `arm64-android` build
 
 ---
 
+## ADB Wireless Self-Connect (Optional)
+
+By pairing Claude Code's Termux environment to the same device via ADB wireless
+debugging, you unlock system capabilities that SELinux blocks from Termux directly.
+Once connected, Claude Code agents can take screenshots, read calendar events, query
+installed apps, inject input, toggle system settings (including Do Not Disturb), and
+inspect running processes — all without root.
+
+Setup takes about 5 minutes. See **[ADB-WIRELESS.md](ADB-WIRELESS.md)** for the
+complete pairing guide, security considerations, and persistence notes.
+
+---
+
 ## Alternative: Anthropic Remote Control
 
 If you have a desktop or laptop running Claude Code, [Remote Control](https://docs.anthropic.com/en/docs/claude-code/remote-control) lets you control it from your phone via QR code. No Termux needed.
@@ -156,6 +169,7 @@ If you have a desktop or laptop running Claude Code, [Remote Control](https://do
 |------|-----------|
 | **[INSTALL.md](INSTALL.md)** | Complete step-by-step guide with Path A and Path B |
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common failures with symptoms, causes, and fixes |
+| **[ADB-WIRELESS.md](ADB-WIRELESS.md)** | ADB wireless self-connect setup, security, and persistence |
 | **[CONSTITUTION-TEMPLATE.md](CONSTITUTION-TEMPLATE.md)** | CLAUDE.md template for persistent rules on Android |
 | **[install.sh](install.sh)** | One-command installer for Path A |
 | **[.claude/skills/](.claude/skills/)** | 8 Claude Code skills — Android diagnostics + general workflow tools |
@@ -200,6 +214,22 @@ Running on a phone means real limits:
 | /tmp is volatile (Path A) | proot crash = mount gone | Never store persistent state in /tmp |
 
 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed fixes.
+
+---
+
+## Security
+
+**Wireless debugging** must be enabled in Developer Options to use ADB self-connect.
+When enabled, any device on the same WiFi network can attempt to pair with your device.
+ADB requires a pairing code for every new connection — passive scanning is not enough.
+
+Recommended practice: enable wireless debugging only when actively using ADB features,
+and disable it when on untrusted networks. The connection from Termux is
+localhost-only (`127.0.0.1`), so the ADB server itself does not listen on external
+interfaces from the Termux side.
+
+This risk is the same risk accepted by any Android developer using wireless debugging.
+It is documented here for users who may not be familiar with it.
 
 ---
 
@@ -263,6 +293,15 @@ This repo is built and maintained using Claude Code running on the same Android 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+---
+
+## Roadmap
+
+- Multi-device verification (Pixel, more Samsung devices)
+- Ubuntu guest path improvements
+- Expanded ADB integration and automation
+- Overnight autonomous agent capabilities
 
 ---
 
