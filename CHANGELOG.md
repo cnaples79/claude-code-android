@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.1] — 2026-03-21
+
+### Security
+
+- **Scrubbed device UIDs from test results** — `tests/results/s26ultra-android16.txt` contained real Android UID values in directory listings. Replaced with `<uid>` placeholders throughout. UIDs are not secrets but are device-specific identifiers that belong to the device owner, not the public record.
+- **Sanitized `verify-claims.sh` to prevent future UID leaks** — The script now strips numeric UIDs from `ls -la` output before writing to results files. Future runs on any device will not capture owner UIDs.
+
+### Fixed
+
+- **Screenshot alt text corrected in README** — Updated alt text on header screenshots to match the actual device shown in each image.
+- **Concurrency limit inconsistency** — STORY.md stated the historical limit of 3 (from before stress testing), CONSTITUTION-TEMPLATE.md still advised a limit of 2. Both now reflect the current tested limit of 6, consistent with CLAUDE.md and INSTALL.md.
+- **Issue #16615 status in TROUBLESHOOTING.md** — The upstream issues table listed `#16615` (Platform detection — `android` not recognized) as open. Status corrected to `Closed (not planned)`.
+- **Stale self-reported path in test results** — `tests/results/s26ultra-android16.txt` contained a "Results written to:" line with a device-specific absolute path. Replaced with a relative path that is valid on any clone.
+
+---
+
 ## [2.0.0] — 2026-03-21
 
 ### Added

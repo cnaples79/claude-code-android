@@ -422,7 +422,7 @@ Known issues filed against the Claude Code repository that affect Android/Termux
 | Issue | Description | Status | Workaround |
 |-------|-------------|--------|------------|
 | [#15637](https://github.com/anthropics/claude-code/issues/15637) | Hardcoded `/tmp/claude` paths | Open | proot bind mount |
-| [#16615](https://github.com/anthropics/claude-code/issues/16615) | Platform detection — `android` not recognized | Open (stale) | cli.js patching |
+| [#16615](https://github.com/anthropics/claude-code/issues/16615) | Platform detection — `android` not recognized | Closed (not planned) | cli.js patching |
 | [#9435](https://github.com/anthropics/claude-code/issues/9435) | Missing arm64-android ripgrep binary | Closed | System ripgrep + symlink |
 | [PR #31701](https://github.com/anthropics/claude-code/pull/31701) | Fix: respect `$TMPDIR` instead of hardcoding `/tmp` | Open PR | — |
 

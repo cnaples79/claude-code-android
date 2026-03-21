@@ -24,7 +24,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/Android-14%2B-brightgreen.svg" alt="Android 14+">
-  <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg" alt="Version 2.0.0">
+  <img src="https://img.shields.io/badge/Version-2.0.1-blue.svg" alt="Version 2.0.1">
   <img src="https://img.shields.io/badge/Last%20Verified-March%202026-lightgrey.svg" alt="Last Verified March 2026">
 </p>
 
@@ -250,7 +250,7 @@ If you have a desktop or laptop running Claude Code, [Remote Control](https://do
 
 | Document | What It Covers |
 |----------|---------------|
-| **[CHANGELOG.md](CHANGELOG.md)** | Version history from 0.1.0 to 2.0.0 |
+| **[CHANGELOG.md](CHANGELOG.md)** | Version history from 0.1.0 to 2.0.1 |
 | **[CONTRIBUTING.md](CONTRIBUTING.md)** | How to contribute, report bugs, submit device reports |
 | **[AGENTS.md](AGENTS.md)** | The 6 AI agents that build and maintain this repo |
 | **[STORY.md](STORY.md)** | How this project came together |
@@ -378,5 +378,5 @@ MIT. See [LICENSE](LICENSE).
 <p align="center">
   <em>Built on a phone, in Termux, through proot, on ARM64, on Android.</em><br>
   <em>By a human and an AI, working together.</em><br>
-  <em>v2.0.0</em>
+  <em>v2.0.1</em>
 </p>

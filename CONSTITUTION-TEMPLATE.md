@@ -38,7 +38,7 @@ These produce silent failures, not errors. Every decision must account for them.
 6. **Set TMPDIR before npm operations.** `export TMPDIR=$PREFIX/tmp` — without it, npm fails silently.
 7. **Termux paths are non-standard.** Home is `/data/data/com.termux/files/home`, prefix is `/data/data/com.termux/files/usr`. Upstream defaults and Stack Overflow paths will be wrong. Verify before using.
 8. **Storage is finite.** This is a phone. Generate no unnecessary artifacts, dependencies, or files.
-9. **Phantom process killer is active.** Android limits background processes to ~32 across all apps. Limit concurrent subagents to 2. If a session dies unexpectedly, this is the likely cause. Workaround: enable "Disable child process restrictions" in Developer Options.
+9. **Phantom process killer.** Android limits background processes to ~32 across all apps. If "Disable child process restrictions" is enabled in Developer Options, the killer is disabled and you can run up to 6 concurrent subagents safely (stress-tested). If that option is not enabled on your device, limit concurrent subagents to 2-3 until you verify it.
 10. **File descriptor limits vary by device.** Heavy I/O or many sockets can trigger EMFILE errors. Check your limit with `ulimit -n`. Avoid spawning unnecessary processes.
 11. **If proot crashes, `/tmp` vanishes.** Any in-progress writes to `/tmp` are lost. Treat `/tmp` as ephemeral — never store state there that isn't also on disk in the repo.
 
@@ -74,7 +74,7 @@ Subagents are scoped execution contexts, not personas. They are defined in `.cla
 
 **Example roster:** Librarian (read-only research), Chronicler (documentation/writing), Smith (code/debug/test), Curator (repo hygiene/config), Architect (planning/design, read-only — proposes, never executes).
 
-**Concurrency limit: 2 subagents maximum** (phantom process killer constraint).
+**Concurrency limit: 6 subagents maximum** (stress-tested — load, RAM, and thermal impact were negligible). If Android's phantom process killer is still enabled on your device, use a lower limit (2-3) until you disable it in Developer Options.
 
 **No chaining.** Subagents do not invoke other subagents. Multi-domain work is coordinated from the top.
 

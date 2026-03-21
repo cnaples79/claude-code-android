@@ -29,7 +29,7 @@ You are running inside Termux on Android (aarch64). These constraints produce **
 - **`TMPDIR` must be set** before npm operations: `export TMPDIR=$PREFIX/tmp`
 - **Node.js v24 hangs** on ARM64 under Termux. Require v25+.
 - **File descriptor limits vary by device.** Check with `ulimit -n`. Avoid spawning many concurrent processes.
-- **Android phantom process killer** limits background processes to ~32 across all apps. Limit concurrent subagents to 2.
+- **Android phantom process killer** limits background processes to ~32 across all apps. If "Disable child process restrictions" is enabled in Developer Options, this limit is lifted and up to 6 concurrent subagents are safe. Otherwise limit to 2-3.
 - **proot crash = /tmp mount gone.** Never store persistent state in `/tmp`.
 - **`process.platform` returns `"android"`**, not `"linux"`. Some tools check for `linux` specifically and fail.
 

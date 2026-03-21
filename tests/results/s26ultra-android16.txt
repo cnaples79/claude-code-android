@@ -27,10 +27,10 @@ CLAIM 2: /tmp requires proot bind mount to be writable on Android
   Claim: /tmp isn't writable from Termux sandbox; proot bind-mounts $PREFIX/tmp to /tmp
   Test: ls -la /tmp
 total 18
-drwx------.  5 u0_a491 u0_a491 3452 Mar 19 10:58 .
+drwx------.  5 <uid> <uid> 3452 Mar 19 10:58 .
 drwxr-xr-x. 32 root    root     831 Dec 31  2021 ..
-drwx------.  3 u0_a491 u0_a491 3452 Mar 19 09:13 claude-10491
-drwx------.  3 u0_a491 u0_a491 3452 Mar 19 09:12 node-compile-cache
+drwx------.  3 <uid> <uid> 3452 Mar 19 09:13 claude-<pid>
+drwx------.  3 <uid> <uid> 3452 Mar 19 09:12 node-compile-cache
   Result:
     /tmp writable (we are inside proot): true
     $PREFIX/tmp writable: true
@@ -140,9 +140,9 @@ CLAIM 9: proot -b $PREFIX/tmp:/tmp remaps /tmp for Claude Code
   Claim: proot intercepts syscalls and makes /tmp point to $PREFIX/tmp
   Test: Check if /tmp and $PREFIX/tmp contain identical contents (confirms bind mount)
   Evidence:
-    /tmp contents: claude-10491 node-compile-cache proot-27032-9jfy64 
-    $PREFIX/tmp contents: claude-10491 node-compile-cache proot-27032-9jfy64 
-    Claude Code runtime dirs in /tmp: /tmp/claude-10491
+    /tmp contents: claude-<pid> node-compile-cache proot-<pid>-<random>
+    $PREFIX/tmp contents: claude-<pid> node-compile-cache proot-<pid>-<random>
+    Claude Code runtime dirs in /tmp: /tmp/claude-<pid>
     Write to /tmp, read from $PREFIX/tmp (bind mount test): true
   Result: /tmp and $PREFIX/tmp are the same filesystem location — bind mount confirmed
   Verdict: CONFIRMED
@@ -164,7 +164,7 @@ SUMMARY
   Unconfirmed:  2/10
   Cannot test:  2/10
 
-Results written to: /data/data/com.termux/files/home/repos/claude-code-android/tests/verification-results.txt
+Results written to: tests/results/s26ultra-android16.txt
 
 Notes:
   UNCONFIRMED does not mean FALSE — it means the live test could not

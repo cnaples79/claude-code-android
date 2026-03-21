@@ -154,7 +154,7 @@ if [ -L /tmp ] || [ "$(stat -c '%i' /tmp 2>/dev/null)" = "$(stat -c '%i' "$PREFI
 fi
 
 echo "  Test: ls -la /tmp"
-ls -la /tmp 2>/dev/null | head -5 || echo "  (ls /tmp failed)"
+ls -la /tmp 2>/dev/null | head -5 | sed 's/u0_a[0-9]*/\<uid\>/g' || echo "  (ls /tmp failed)"
 echo "  Result:"
 echo "    /tmp writable (we are inside proot): $TMP_WRITABLE"
 echo "    \$PREFIX/tmp writable: $PREFIX_TMP_WRITABLE"

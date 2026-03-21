@@ -115,7 +115,7 @@ The agent system came from that failure. Six specialists, each scoped to a domai
 | **Curator** | Repo hygiene and config | Applies the "stranger test." |
 | **Herald** | Audience-facing content | Added when external attention required a translator. |
 
-They are not personas. They are scoped execution contexts with defined tool access and boundaries. No agent can push code. No agent calls another agent. The concurrency limit is three — because this is a phone, and RAM is shared with everything else Android is doing.
+They are not personas. They are scoped execution contexts with defined tool access and boundaries. No agent can push code. No agent calls another agent. The concurrency limit is six — raised from three after stress testing in v2.0.0 confirmed that all six agents running simultaneously on Opus produced negligible load, RAM, and thermal impact on this hardware.
 
 ```mermaid
 flowchart TD

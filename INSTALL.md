@@ -343,7 +343,7 @@ On first launch, authentication requires manual URL copy/paste. No browser auto-
 | | Path A (Native Termux) | Path B (proot-distro Ubuntu) |
 |---|---|---|
 | Setup time | ~2 minutes | ~10-15 minutes |
-| Disk usage | Minimal | ~500MB+ for Ubuntu rootfs |
+| Disk usage | Minimal | ~2 GB for Ubuntu rootfs + Claude Code |
 | /tmp workaround | Required (proot bind mount) | Not needed |
 | ripgrep fix | Required (symlink, breaks on update) | Not needed |
 | Install method | npm | Native installer (curl) |
