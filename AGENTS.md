@@ -73,7 +73,7 @@ The operator gives direction. I route to the appropriate agent. The agent works 
 - **No agent can push code.** Pushes go through me, with operator approval.
 - **No agent invokes another agent.** Multi-domain work is coordinated from the top.
 - **No agent modifies files outside the project directory.**
-- **Maximum 3 agents running concurrently.** Conserves phone resources — RAM, CPU, and battery are finite on a mobile device.
+- **Maximum 6 agents running concurrently.** Stress-tested with all 6 agents on Opus simultaneously — load, RAM, and thermal impact were negligible on this hardware (8-core Snapdragon, 11 GB RAM). The practical ceiling is API rate limits, not the device.
 
 ---
 
